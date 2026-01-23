@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: quiz
+
+  profiles:
+    active: dev
