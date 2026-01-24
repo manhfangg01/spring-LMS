@@ -2,12 +2,17 @@ package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity extends BaseEntity {
     private String userName;
     private String email;
