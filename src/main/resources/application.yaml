@@ -1,6 +1,7 @@
 spring:
   application:
     name: quiz
-
+  main:
+    banner-mode: off
   profiles:
     active: dev
