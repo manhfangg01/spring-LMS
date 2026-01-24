@@ -1,7 +1,25 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: quiz
   main:
     banner-mode: off
-  profiles:
-    active: dev
+
+  config:
+    import: "file:.env[.properties]"
+
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
