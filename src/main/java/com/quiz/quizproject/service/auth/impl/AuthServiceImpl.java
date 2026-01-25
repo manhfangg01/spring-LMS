@@ -78,6 +78,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public AuthResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
@@ -92,8 +93,8 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         String accessToken = jwtService.generateAccessToken(userDetails);
         String refreshTokenStr = jwtService.generateRefreshToken(userDetails);
-        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByUser(user)
-                .orElse(new RefreshTokenEntity());
+        refreshTokenRepository.deleteByUser(user);
+        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
         refreshTokenEntity.setUser(user);
         refreshTokenEntity.setValue(refreshTokenStr);
         refreshTokenEntity.setExpiryDate(Instant.now().plusMillis(refreshValidTime));
@@ -120,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
                         .map(r -> new SimpleGrantedAuthority(r.getName())).toList())
                 .build();
 
-        refreshTokenRepository.delete(tokenEntity);
+        refreshTokenRepository.deleteByUser(user);
 
         String newAccessToken = jwtService.generateAccessToken(userDetails);
         String newRefreshToken = jwtService.generateRefreshToken(userDetails);
