@@ -1,6 +1,7 @@
 package com.quiz.quizproject.controller.auth;
 
-import com.quiz.quizproject.entity.dto.request.AuthRequest;
+import com.quiz.quizproject.entity.dto.request.SignInRequest;
+import com.quiz.quizproject.entity.dto.request.SignUpRequest;
 import com.quiz.quizproject.entity.dto.response.AuthResponse;
 import com.quiz.quizproject.service.auth.AuthService;
 import jakarta.servlet.http.Cookie;
@@ -31,12 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<String> signUp(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.singUp(request));
+    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpRequest request) {
+        return ResponseEntity.ok(authService.signUp(request));
     }
 
     @PostMapping("signin")
-    public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody AuthRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody SignInRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.signIn(request);
 
         // Lưu Refresh Token vào HttpOnly Cookie

@@ -3,7 +3,8 @@ package com.quiz.quizproject.service.auth.impl;
 import com.quiz.quizproject.entity.RefreshTokenEntity;
 import com.quiz.quizproject.entity.RoleEntity;
 import com.quiz.quizproject.entity.UserEntity;
-import com.quiz.quizproject.entity.dto.request.AuthRequest;
+import com.quiz.quizproject.entity.dto.request.SignInRequest;
+import com.quiz.quizproject.entity.dto.request.SignUpRequest;
 import com.quiz.quizproject.entity.dto.response.AuthResponse;
 import com.quiz.quizproject.repository.RefreshTokenRepository;
 import com.quiz.quizproject.repository.RoleRepository;
@@ -14,9 +15,7 @@ import com.quiz.quizproject.util.exception.ApiException;
 import com.quiz.quizproject.util.exception.TokenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public String singUp(AuthRequest request) {
+    public String signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new ApiException("Email đã được sử dụng!");
         }
@@ -79,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse signIn(AuthRequest request) {
+    public AuthResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
