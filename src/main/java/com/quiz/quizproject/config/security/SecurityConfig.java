@@ -45,8 +45,6 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 );
 
-
-
         return http.build();
     }
 

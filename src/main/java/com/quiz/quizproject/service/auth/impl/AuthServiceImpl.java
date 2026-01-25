@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse refreshToken(String requestRefreshToken) {
-        RefreshTokenEntity tokenEntity = refreshTokenRepository.findByToken(requestRefreshToken)
+        RefreshTokenEntity tokenEntity = refreshTokenRepository.findByValue(requestRefreshToken)
                 .orElseThrow(() -> new TokenException("Refresh token không tồn tại!"));
 
         if (!jwtService.isRefreshTokenValid(requestRefreshToken, tokenEntity)) {
@@ -142,7 +142,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public void signOut(String refreshToken) {
-        refreshTokenRepository.findByToken(refreshToken)
+        refreshTokenRepository.findByValue(refreshToken)
                 .ifPresent(refreshTokenRepository::delete);
     }
 }
