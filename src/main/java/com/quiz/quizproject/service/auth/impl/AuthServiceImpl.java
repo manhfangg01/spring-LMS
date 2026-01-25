@@ -49,11 +49,8 @@ public class AuthServiceImpl implements AuthService {
             throw new ApiException("Email đã được sử dụng!");
         }
 
-        String finalUserName = request.userName();
 
-        if (userRepository.existsByUserName(finalUserName)) {
-            finalUserName = generateUniqueUserName(finalUserName);
-        }
+        String finalUserName = generateUniqueUserName(request.userName());
 
         UserEntity user = new UserEntity();
         user.setUserName(finalUserName);
