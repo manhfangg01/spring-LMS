@@ -48,7 +48,6 @@ public class AuthServiceImpl implements AuthService {
             throw new ApiException("Email đã được sử dụng!");
         }
 
-
         String finalUserName = generateUniqueUserName(request.userName());
 
         UserEntity user = new UserEntity();
@@ -66,39 +65,30 @@ public class AuthServiceImpl implements AuthService {
         return "Chúc mừng đã đăng ký thành công, với username: " + finalUserName;
     }
 
-    private String generateUniqueUserName(String baseName) {
-        String newName = baseName;
-        Random random = new Random();
-
-        while (userRepository.existsByUserName(newName)) {
-            int randomNumber = random.nextInt(1000, 9999);
-            newName = baseName + randomNumber;
-        }
-        return newName;
-    }
-
     @Override
     @Transactional
     public AuthResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
+
         UserEntity user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new ApiException("User không tồn tại"));
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getRoles().stream()
-                        .map(r -> new SimpleGrantedAuthority(r.getName())).toList())
-                .build();
+
+        UserDetails userDetails = buildUserDetails(user);
+
         String accessToken = jwtService.generateAccessToken(userDetails);
         String refreshTokenStr = jwtService.generateRefreshToken(userDetails);
-        refreshTokenRepository.deleteByUser(user);
-        RefreshTokenEntity refreshTokenEntity = new RefreshTokenEntity();
+
+        RefreshTokenEntity refreshTokenEntity = refreshTokenRepository.findByUser(user)
+                .orElse(new RefreshTokenEntity());
+
         refreshTokenEntity.setUser(user);
         refreshTokenEntity.setValue(refreshTokenStr);
         refreshTokenEntity.setExpiryDate(Instant.now().plusMillis(refreshValidTime));
+
         refreshTokenRepository.save(refreshTokenEntity);
+
         return AuthResponse.of(accessToken, refreshTokenStr);
     }
 
@@ -114,32 +104,42 @@ public class AuthServiceImpl implements AuthService {
         }
 
         UserEntity user = tokenEntity.getUser();
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
+        UserDetails userDetails = buildUserDetails(user);
+
+        String newAccessToken = jwtService.generateAccessToken(userDetails);
+        String newRefreshToken = jwtService.generateRefreshToken(userDetails);
+
+        tokenEntity.setValue(newRefreshToken);
+        tokenEntity.setExpiryDate(Instant.now().plusMillis(refreshValidTime));
+
+        refreshTokenRepository.save(tokenEntity);
+
+        return AuthResponse.of(newAccessToken, newRefreshToken);
+    }
+
+    @Override
+    @Transactional
+    public void signOut(String refreshToken) {
+        refreshTokenRepository.findByValue(refreshToken)
+                .ifPresent(refreshTokenRepository::delete);
+    }
+
+    private UserDetails buildUserDetails(UserEntity user) {
+        return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities(user.getRoles().stream()
                         .map(r -> new SimpleGrantedAuthority(r.getName())).toList())
                 .build();
-
-        refreshTokenRepository.deleteByUser(user);
-
-        String newAccessToken = jwtService.generateAccessToken(userDetails);
-        String newRefreshToken = jwtService.generateRefreshToken(userDetails);
-
-        RefreshTokenEntity newTokenEntity = new RefreshTokenEntity();
-        newTokenEntity.setUser(user);
-        newTokenEntity.setValue(newRefreshToken);
-        newTokenEntity.setExpiryDate(Instant.now().plusMillis(refreshValidTime));
-
-        refreshTokenRepository.save(newTokenEntity);
-
-        return AuthResponse.of(newAccessToken, newRefreshToken);
     }
 
-
-    @Transactional
-    public void signOut(String refreshToken) {
-        refreshTokenRepository.findByValue(refreshToken)
-                .ifPresent(refreshTokenRepository::delete);
+    private String generateUniqueUserName(String baseName) {
+        String newName = baseName;
+        Random random = new Random();
+        while (userRepository.existsByUserName(newName)) {
+            int randomNumber = random.nextInt(1000, 9999);
+            newName = baseName + randomNumber;
+        }
+        return newName;
     }
 }
