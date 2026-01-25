@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -30,12 +30,12 @@ public class AuthController {
         response.addCookie(cookie);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.singUp(request));
     }
 
-    @PostMapping("/signin")
+    @PostMapping("signin")
     public ResponseEntity<AuthResponse> signIn(@Valid @RequestBody AuthRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.signIn(request);
 
@@ -45,7 +45,7 @@ public class AuthController {
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("refresh-token")
     public ResponseEntity<AuthResponse> refresh(
             @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse response
@@ -57,7 +57,7 @@ public class AuthController {
         return ResponseEntity.ok(authResponse);
     }
 
-    @PostMapping("/signout")
+    @PostMapping("signout")
     public ResponseEntity<Void> signOut(
             @CookieValue(name = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
