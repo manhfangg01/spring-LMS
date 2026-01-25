@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenEntity.setValue(refreshTokenStr);
         refreshTokenEntity.setExpiryDate(Instant.now().plusMillis(refreshValidTime));
         refreshTokenRepository.save(refreshTokenEntity);
-        return AuthResponse.of(accessToken, refreshTokenStr, user.getUserName());
+        return AuthResponse.of(accessToken, refreshTokenStr);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class AuthServiceImpl implements AuthService {
 
         refreshTokenRepository.save(newTokenEntity);
 
-        return AuthResponse.of(newAccessToken, newRefreshToken, user.getUserName());
+        return AuthResponse.of(newAccessToken, newRefreshToken);
     }
 
 
