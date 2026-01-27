@@ -22,11 +22,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final Map<String, Object> body = new HashMap<>();
+        body.put("name","AuthenticationException");
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("error", "Unauthorized");
-        body.put("message", "Token không hợp lệ hoặc đã hết hạn!");
-        body.put("path", request.getServletPath());
-
+        body.put("message", "Đăng nhập thất bại");
+        body.put("error", "Token không hợp lệ hoặc đã hết hạn!");
+        body.put("timestamp", System.currentTimeMillis());
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }

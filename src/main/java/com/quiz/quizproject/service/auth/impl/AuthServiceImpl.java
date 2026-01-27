@@ -11,11 +11,11 @@ import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.repository.UserRepository;
 import com.quiz.quizproject.service.auth.AuthService;
 import com.quiz.quizproject.service.auth.JwtService;
-import com.quiz.quizproject.util.exception.ApiException;
-import com.quiz.quizproject.util.exception.TokenException;
+import com.quiz.quizproject.util.exception.handler.AppException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public String signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new ApiException("Email đã được sử dụng!");
+            throw new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Lỗi đăng kí", "Email đã được sử dụng!");
         }
 
         String finalUserName = generateUniqueUserName(request.userName());
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus("ACTIVE");
 
         RoleEntity userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new ApiException("Role không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Role không tồn tại!", null));
         user.setRoles(List.of(userRole));
 
         userRepository.save(user);
@@ -73,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         UserEntity user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new ApiException("User không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Email người dùng không không tồn tại!",null));
 
         UserDetails userDetails = buildUserDetails(user);
 
@@ -96,11 +96,11 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse refreshToken(String requestRefreshToken) {
         RefreshTokenEntity tokenEntity = refreshTokenRepository.findByValue(requestRefreshToken)
-                .orElseThrow(() -> new TokenException("Refresh token không tồn tại!"));
+                .orElseThrow(() -> new AppException("TokenException", HttpStatus.UNAUTHORIZED,"RefreshToken không tồn tại!", null));
 
         if (!jwtService.isRefreshTokenValid(requestRefreshToken, tokenEntity)) {
             refreshTokenRepository.delete(tokenEntity);
-            throw new TokenException("Refresh token không hợp lệ hoặc đã hết hạn!");
+            throw new AppException("TokenException", HttpStatus.UNAUTHORIZED,"RefreshToken không đúng hoặc hết hạn!",null);
         }
 
         UserEntity user = tokenEntity.getUser();

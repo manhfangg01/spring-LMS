@@ -11,6 +11,6 @@ public record SignUpRequest(
       @Size(min = 6, message = "Mật khẩu phải từ 6 ký tự")
       String password,
       @NotBlank(message = "Email không được để trống")
-      @Email
+      @Email(message = "Email không đúng định dạng")
       String email)
 {}

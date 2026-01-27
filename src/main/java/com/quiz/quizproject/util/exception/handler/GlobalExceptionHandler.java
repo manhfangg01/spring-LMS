@@ -1,53 +1,65 @@
 package com.quiz.quizproject.util.exception.handler;
 
-import com.quiz.quizproject.util.exception.ApiException;
-import com.quiz.quizproject.util.exception.TokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorDetail> handleApiException(ApiException ex) {
-        ErrorDetail error = new ErrorDetail(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ErrorDetail> handleAppException(AppException ex) {
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(new ErrorDetail(
+                        ex.getName(),
+                        ex.getStatusCode().value(),
+                        ex.getMessage(),
+                        System.currentTimeMillis(),null
+                ));
     }
 
-    @ExceptionHandler(TokenException.class)
-    public ResponseEntity<ErrorDetail> handleTokenException(TokenException ex) {
-        ErrorDetail error = new ErrorDetail(
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage(),
-                System.currentTimeMillis()
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
         );
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        return ResponseEntity
+                .status(ex.getStatusCode().value())
+                .body(new ErrorDetail(
+                        "MethodArgumentNotValidException",
+                        ex.getStatusCode().value(),
+                        "Lỗi trường dữ liệu",
+                        System.currentTimeMillis(), errors
+                ));
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorDetail> handleBadCredentials(BadCredentialsException ex) {
-        ErrorDetail error = new ErrorDetail(
-                HttpStatus.UNAUTHORIZED.value(),
-                "Thông tin đăng nhập không hợp lệ",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorDetail> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        return ResponseEntity
+                .status(ex.getStatusCode().value())
+                .body(new ErrorDetail(
+                        "NoHandlerFoundException",
+                        ex.getStatusCode().value(),
+                        "Đường dẫn API không tồn tại",
+                        System.currentTimeMillis(), null
+                ));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetail> handleGlobalException(Exception ex) {
-        ErrorDetail error = new ErrorDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Đã có lỗi hệ thống xảy ra: " + ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorDetail> handleUnwantedException(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorDetail("ServerError", 500, "Lỗi hệ thống: " + ex.getMessage(), System.currentTimeMillis(), null));
     }
+
 }

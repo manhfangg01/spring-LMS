@@ -8,7 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ErrorDetail {
+    private String name;
     private int status;
     private String message;
     private long timestamp;
+    private Object error;
+
 }
