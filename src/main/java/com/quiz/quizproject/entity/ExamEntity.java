@@ -2,13 +2,10 @@ package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.service.constant.ExamType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "exams")
@@ -23,4 +20,10 @@ public class ExamEntity extends BaseEntity {
     private Long durationInSeconds;
     private String totalQuestions;
     private String description;
+
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExamMaterialEntity> examMaterials;
+
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestAttemptEntity> testAttempts;
 }

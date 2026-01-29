@@ -33,3 +33,4 @@ build/
 .vscode/
 .env
 /ERD.drawio
+/.$ERD.drawio.bkp

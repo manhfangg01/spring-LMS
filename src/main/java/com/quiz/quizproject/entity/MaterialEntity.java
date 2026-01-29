@@ -1,13 +1,12 @@
 package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Table(name = "materials")
@@ -19,4 +18,11 @@ public class MaterialEntity extends BaseEntity {
     private String title;
     private String contentText;
     private String audioUrl;
+
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExamMaterialEntity> examMaterials;
+
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionEntity> questions;
+
 }

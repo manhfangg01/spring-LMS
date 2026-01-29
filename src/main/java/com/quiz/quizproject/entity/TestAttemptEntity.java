@@ -2,10 +2,7 @@ package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.service.constant.TestAttemptStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +22,18 @@ public class TestAttemptEntity extends BaseEntity {
     private Double score;
     @Enumerated(EnumType.STRING)
     private TestAttemptStatus status;
+
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private  UserEntity user;
+
+    @ManyToOne()
+    @JoinColumn(name = "exam_id")
+    private  ExamEntity exam;
+
+    @OneToMany(mappedBy = "testAttempt", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserAnswerEntity> userAnswers;
+
+
+
 }

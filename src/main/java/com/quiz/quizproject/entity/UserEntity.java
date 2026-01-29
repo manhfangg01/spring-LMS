@@ -1,5 +1,6 @@
 package com.quiz.quizproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.service.constant.UserStatus;
 import jakarta.persistence.*;
@@ -25,4 +26,9 @@ public class UserEntity extends BaseEntity {
     @ManyToOne()
     @JoinColumn(name = "role_id")
     private RoleEntity role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<TestAttemptEntity> testAttempts;
+
 }
