@@ -1,8 +1,10 @@
 package com.quiz.quizproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class RoleEntity extends BaseEntity {
     private String name;
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
+    @JsonIgnore
     private List<UserEntity> users;
 }

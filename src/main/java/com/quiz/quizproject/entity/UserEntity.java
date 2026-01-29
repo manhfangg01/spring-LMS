@@ -1,6 +1,7 @@
 package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.service.constant.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,13 +18,11 @@ public class UserEntity extends BaseEntity {
     private String userName;
     private String email;
     private String password;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+    private String avatarUrl;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private List<RoleEntity> roles;
+    @ManyToOne()
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
 }

@@ -11,6 +11,7 @@ import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.repository.UserRepository;
 import com.quiz.quizproject.service.auth.AuthService;
 import com.quiz.quizproject.service.auth.JwtService;
+import com.quiz.quizproject.service.constant.UserStatus;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -54,11 +55,11 @@ public class AuthServiceImpl implements AuthService {
         user.setUserName(finalUserName);
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setStatus("ACTIVE");
+        user.setStatus(UserStatus.ACTIVE);
 
         RoleEntity userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Role không tồn tại!", null));
-        user.setRoles(List.of(userRole));
+        user.setRole(userRole);
 
         userRepository.save(user);
 
@@ -128,8 +129,7 @@ public class AuthServiceImpl implements AuthService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .authorities(user.getRoles().stream()
-                        .map(r -> new SimpleGrantedAuthority(r.getName())).toList())
+                .authorities(new SimpleGrantedAuthority(user.getRole().getName()))
                 .build();
     }
 

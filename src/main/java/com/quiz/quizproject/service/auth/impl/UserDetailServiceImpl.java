@@ -3,6 +3,7 @@ package com.quiz.quizproject.service.auth.impl;
 import com.quiz.quizproject.entity.UserEntity;
 import com.quiz.quizproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return   User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRoles().stream().map(r -> r.getName().replace("ROLE_", "")).toArray(String[]::new))
+                .authorities(new SimpleGrantedAuthority(user.getRole().getName()))
                 .build();
     }
 }
