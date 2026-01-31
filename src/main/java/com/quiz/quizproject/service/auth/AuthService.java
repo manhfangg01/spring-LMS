@@ -1,14 +1,14 @@
 package com.quiz.quizproject.service.auth;
 
-import com.quiz.quizproject.entity.dto.request.SignInRequest;
-import com.quiz.quizproject.entity.dto.request.SignUpRequest;
-import com.quiz.quizproject.entity.dto.response.AuthResponse;
+import com.quiz.quizproject.entity.auth.dto.request.SignInRequest;
+import com.quiz.quizproject.entity.auth.dto.request.SignUpRequest;
+import com.quiz.quizproject.entity.auth.dto.response.AuthResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthService {
-    public String signUp(SignUpRequest signUpRequest);
-    public AuthResponse signIn(SignInRequest signUpRequest);
-    public AuthResponse refreshToken(String refreshToken);
-    public void signOut(String refreshToken);
+    String signUp(SignUpRequest signUpRequest);
+    AuthResponse signIn(SignInRequest signUpRequest);
+    AuthResponse refreshToken(String refreshToken);
+    void signOut(String refreshToken);
 }

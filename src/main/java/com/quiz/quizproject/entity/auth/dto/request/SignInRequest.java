@@ -1,4 +1,4 @@
-package com.quiz.quizproject.entity.dto.request;
+package com.quiz.quizproject.entity.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
