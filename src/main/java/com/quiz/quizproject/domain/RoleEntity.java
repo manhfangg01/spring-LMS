@@ -1,9 +1,9 @@
-package com.quiz.quizproject.entity;
+package com.quiz.quizproject.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.user.UserEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;

@@ -1,8 +1,8 @@
 package com.quiz.quizproject.service.auth;
 
-import com.quiz.quizproject.entity.auth.dto.request.SignInRequest;
-import com.quiz.quizproject.entity.auth.dto.request.SignUpRequest;
-import com.quiz.quizproject.entity.auth.dto.response.AuthResponse;
+import com.quiz.quizproject.domain.auth.dto.request.SignInRequest;
+import com.quiz.quizproject.domain.auth.dto.request.SignUpRequest;
+import com.quiz.quizproject.domain.auth.dto.response.AuthResponse;
 import org.springframework.stereotype.Service;
 
 @Service

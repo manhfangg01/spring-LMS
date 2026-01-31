@@ -1,6 +1,7 @@
-package com.quiz.quizproject.entity;
+package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.user.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;

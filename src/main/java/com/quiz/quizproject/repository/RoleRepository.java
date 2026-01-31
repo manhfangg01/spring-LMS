@@ -1,7 +1,6 @@
 package com.quiz.quizproject.repository;
 
-import com.quiz.quizproject.entity.RoleEntity;
-import com.quiz.quizproject.entity.UserEntity;
+import com.quiz.quizproject.domain.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

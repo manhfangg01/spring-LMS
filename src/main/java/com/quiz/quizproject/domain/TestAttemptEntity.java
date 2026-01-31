@@ -1,6 +1,7 @@
-package com.quiz.quizproject.entity;
+package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.user.UserEntity;
 import com.quiz.quizproject.util.constant.TestAttemptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class TestAttemptEntity extends BaseEntity {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
-    private  UserEntity user;
+    private UserEntity user;
 
     @ManyToOne()
     @JoinColumn(name = "exam_id")

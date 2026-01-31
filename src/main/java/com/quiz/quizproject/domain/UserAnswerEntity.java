@@ -1,4 +1,4 @@
-package com.quiz.quizproject.entity;
+package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
 import jakarta.persistence.Entity;

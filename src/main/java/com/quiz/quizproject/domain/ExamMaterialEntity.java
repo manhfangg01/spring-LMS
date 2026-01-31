@@ -1,4 +1,4 @@
-package com.quiz.quizproject.entity;
+package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
 import jakarta.persistence.Entity;
@@ -11,17 +11,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "question_options")
+@Table(name = "exam_materials")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionOptionEntity extends BaseEntity {
-    private String content;
-    private Boolean isCorrect;
+public class ExamMaterialEntity extends BaseEntity {
+    private Integer orderIndex;
 
-    @ManyToOne()
-    @JoinColumn(name = "question_id")
-    private QuestionEntity question;
+    @ManyToOne
+    @JoinColumn(name = "exam_id")
+    private  ExamEntity exam;
+
+    @ManyToOne
+    @JoinColumn(name = "material_id")
+    private  MaterialEntity material;
 
 }

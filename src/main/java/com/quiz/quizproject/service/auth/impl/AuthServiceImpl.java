@@ -1,11 +1,11 @@
 package com.quiz.quizproject.service.auth.impl;
 
-import com.quiz.quizproject.entity.RefreshTokenEntity;
-import com.quiz.quizproject.entity.RoleEntity;
-import com.quiz.quizproject.entity.UserEntity;
-import com.quiz.quizproject.entity.auth.dto.request.SignInRequest;
-import com.quiz.quizproject.entity.auth.dto.request.SignUpRequest;
-import com.quiz.quizproject.entity.auth.dto.response.AuthResponse;
+import com.quiz.quizproject.domain.RefreshTokenEntity;
+import com.quiz.quizproject.domain.RoleEntity;
+import com.quiz.quizproject.domain.user.UserEntity;
+import com.quiz.quizproject.domain.auth.dto.request.SignInRequest;
+import com.quiz.quizproject.domain.auth.dto.request.SignUpRequest;
+import com.quiz.quizproject.domain.auth.dto.response.AuthResponse;
 import com.quiz.quizproject.repository.RefreshTokenRepository;
 import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.repository.UserRepository;

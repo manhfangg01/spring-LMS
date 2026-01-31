@@ -1,6 +1,6 @@
 package com.quiz.quizproject.service.auth;
 
-import com.quiz.quizproject.entity.RefreshTokenEntity;
+import com.quiz.quizproject.domain.RefreshTokenEntity;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
