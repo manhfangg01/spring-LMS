@@ -2,7 +2,7 @@ package com.quiz.quizproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.service.constant.UserStatus;
+import com.quiz.quizproject.util.constant.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

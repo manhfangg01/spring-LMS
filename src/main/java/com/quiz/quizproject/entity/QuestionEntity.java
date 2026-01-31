@@ -1,7 +1,7 @@
 package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.service.constant.QuestionType;
+import com.quiz.quizproject.util.constant.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

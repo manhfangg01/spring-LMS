@@ -11,7 +11,7 @@ import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.repository.UserRepository;
 import com.quiz.quizproject.service.auth.AuthService;
 import com.quiz.quizproject.service.auth.JwtService;
-import com.quiz.quizproject.service.constant.UserStatus;
+import com.quiz.quizproject.util.constant.UserStatus;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Random;
 
 @Service

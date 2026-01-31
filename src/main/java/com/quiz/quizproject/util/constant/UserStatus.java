@@ -1,4 +1,4 @@
-package com.quiz.quizproject.service.constant;
+package com.quiz.quizproject.util.constant;
 
 public enum UserStatus {
     ACTIVE,

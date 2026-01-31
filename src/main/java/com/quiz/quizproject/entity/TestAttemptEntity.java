@@ -1,7 +1,7 @@
 package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.service.constant.TestAttemptStatus;
+import com.quiz.quizproject.util.constant.TestAttemptStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

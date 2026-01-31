@@ -1,7 +1,7 @@
 package com.quiz.quizproject.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.service.constant.ExamType;
+import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
 import lombok.*;
 

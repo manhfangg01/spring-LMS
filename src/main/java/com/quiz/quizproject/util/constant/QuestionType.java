@@ -1,6 +1,5 @@
-package com.quiz.quizproject.service.constant;
+package com.quiz.quizproject.util.constant;
 
-import jakarta.persistence.Entity;
 
 public enum QuestionType {
     MULTIPLE_CHOICE,
