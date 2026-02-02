@@ -1,6 +1,7 @@
 package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,5 +28,5 @@ public class UserAnswerEntity extends BaseEntity {
 
     @ManyToOne()
     @JoinColumn(name = "question_id")
-    private  QuestionEntity question;
+    private QuestionEntity question;
 }

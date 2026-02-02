@@ -1,13 +1,14 @@
-package com.quiz.quizproject.domain;
+package com.quiz.quizproject.domain.question.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.MaterialEntity;
+import com.quiz.quizproject.domain.UserAnswerEntity;
 import com.quiz.quizproject.util.constant.QuestionType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,12 +18,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionEntity extends BaseEntity {
+    @Column(columnDefinition = "TEXT")
     private String content;
+
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
-    //nếu là dạng FILL_IN_THE_BLANK thì sẽ lưu các đáp án theo dạng chuỗi ngăn cách nhau bởi dấu | trong trường hợp có nhiều đáp án đúng.
+
+    // Dành cho câu hỏi điền từ
     private String correctText;
+
+    @Column(columnDefinition = "TEXT")
     private String explanation;
+
     private Integer orderIndex;
 
     @ManyToOne()
@@ -30,10 +37,14 @@ public class QuestionEntity extends BaseEntity {
     private MaterialEntity material;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionOptionEntity> questionOptions;
+    private List<QuestionOptionEntity> questionOptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserAnswerEntity> userAnswers;
 
-
+    public void addOption(QuestionOptionEntity option) {
+        questionOptions.add(option);
+        option.setQuestion(this);
+    }
 }
