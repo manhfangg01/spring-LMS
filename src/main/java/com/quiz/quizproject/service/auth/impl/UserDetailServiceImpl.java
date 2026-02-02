@@ -1,7 +1,7 @@
 package com.quiz.quizproject.service.auth.impl;
 
 import com.quiz.quizproject.domain.user.UserEntity;
-import com.quiz.quizproject.repository.UserRepository;
+import com.quiz.quizproject.domain.user.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

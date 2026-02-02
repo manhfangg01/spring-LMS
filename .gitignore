@@ -34,3 +34,4 @@ build/
 .env
 /ERD.drawio
 /.$ERD.drawio.bkp
+/test.http
