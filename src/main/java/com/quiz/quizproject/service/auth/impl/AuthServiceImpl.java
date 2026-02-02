@@ -8,11 +8,12 @@ import com.quiz.quizproject.domain.auth.dto.request.SignUpRequest;
 import com.quiz.quizproject.domain.auth.dto.response.AuthResponse;
 import com.quiz.quizproject.repository.RefreshTokenRepository;
 import com.quiz.quizproject.repository.RoleRepository;
-import com.quiz.quizproject.repository.UserRepository;
+import com.quiz.quizproject.domain.user.repo.UserRepository;
 import com.quiz.quizproject.service.auth.AuthService;
 import com.quiz.quizproject.service.auth.JwtService;
 import com.quiz.quizproject.util.constant.UserStatus;
 import com.quiz.quizproject.util.exception.handler.AppException;
+import com.quiz.quizproject.util.random.RandomHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +48,10 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByEmail(request.email())) {
             throw new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Lỗi đăng kí", "Email đã được sử dụng!");
         }
-
-        String finalUserName = generateUniqueUserName(request.userName());
+        String finalUserName="";
+        do {
+             finalUserName = RandomHelper.generateUniqueUserName(request.userName());
+        }while(userRepository.existsByUserName(finalUserName));
 
         UserEntity user = new UserEntity();
         user.setUserName(finalUserName);
@@ -132,13 +135,4 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private String generateUniqueUserName(String baseName) {
-        String newName = baseName;
-        Random random = new Random();
-        while (userRepository.existsByUserName(newName)) {
-            int randomNumber = random.nextInt(1000, 9999);
-            newName = baseName + randomNumber;
-        }
-        return newName;
-    }
 }
