@@ -1,6 +1,7 @@
 package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.exam.ExamEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,7 +22,7 @@ public class ExamMaterialEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "exam_id")
-    private  ExamEntity exam;
+    private ExamEntity exam;
 
     @ManyToOne
     @JoinColumn(name = "material_id")

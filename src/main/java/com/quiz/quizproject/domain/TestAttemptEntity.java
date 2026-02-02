@@ -1,6 +1,7 @@
 package com.quiz.quizproject.domain;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.user.UserEntity;
 import com.quiz.quizproject.util.constant.TestAttemptStatus;
 import jakarta.persistence.*;
@@ -30,7 +31,7 @@ public class TestAttemptEntity extends BaseEntity {
 
     @ManyToOne()
     @JoinColumn(name = "exam_id")
-    private  ExamEntity exam;
+    private ExamEntity exam;
 
     @OneToMany(mappedBy = "testAttempt", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<UserAnswerEntity> userAnswers;

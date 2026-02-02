@@ -1,6 +1,8 @@
-package com.quiz.quizproject.domain;
+package com.quiz.quizproject.domain.exam;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.ExamMaterialEntity;
+import com.quiz.quizproject.domain.TestAttemptEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExamEntity extends BaseEntity {
+    @Column(unique = true)
     private String title;
     @Enumerated(EnumType.STRING)
     private ExamType examType;
