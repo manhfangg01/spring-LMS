@@ -10,14 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ExamMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "testAttempts", ignore = true)
-    @Mapping(target = "totalQuestions", ignore = true)
     ExamEntity toEntity(ExamRequest examRequest);
 
     ExamResponse toResponse(ExamEntity entity);
+
     DetailedExamResponse toDetailedResponse(ExamEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

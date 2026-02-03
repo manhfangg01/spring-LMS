@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:8000/api/parts
+@examId = 1
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5oY3V0bzc3N0BnbWFpbC5jb20iLCJpYXQiOjE3NzAwMTk4MTEsImV4cCI6MTc3MDYyNDYxMX0.nN8SIqLE9LPMIZf0Ut-RMfMw27wmx7iExjMGxFfEV7GnlMg6OejzLCGbqTxg6Q1Y4osXwek6pvThDlgq7wt7Rg
+
+### Get all parts (Paginated)
+GET {{baseUrl}}?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get a specific part by ID
+GET {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Create a new Part
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Part 1: Listening",
+  "description": "Listen to the audio and answer questions.",
+  "examId": {{examId}}
+}
+
+### Update an existing Part
+PUT {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Part 1: Listening (Revised)",
+  "description": "Updated instructions for candidates.",
+  "examId": {{examId}}
+}
+
+### Delete a Part
+DELETE {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### Get all parts by Exam ID
+GET {{baseUrl}}/exam/{{examId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
