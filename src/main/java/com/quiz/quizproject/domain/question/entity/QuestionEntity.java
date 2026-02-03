@@ -25,6 +25,8 @@ public class QuestionEntity extends BaseEntity {
 
     private Integer orderIndex;
 
+    private String correctAnswer; // for gap-fill
+
     @ManyToOne()
     @JoinColumn(name = "question_group_id")
     private QuestionGroupEntity questionGroup;
