@@ -2,12 +2,16 @@ package com.quiz.quizproject.domain.exam.service.impl;
 
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.exam.dto.request.ExamRequest;
+import com.quiz.quizproject.domain.exam.dto.response.DetailedExamResponse;
 import com.quiz.quizproject.domain.exam.dto.response.ExamResponse;
 import com.quiz.quizproject.domain.exam.filter.ExamFilter;
 import com.quiz.quizproject.domain.exam.mapper.ExamMapper;
 import com.quiz.quizproject.domain.exam.repo.ExamRepository;
 import com.quiz.quizproject.domain.exam.service.ExamService;
+import com.quiz.quizproject.domain.part.PartEntity;
+import com.quiz.quizproject.domain.part.repo.PartRepository;
 import com.quiz.quizproject.util.exception.handler.AppException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +20,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
     private final ExamMapper examMapper;
+    private  final PartRepository partRepository;
 
     @Override
     public Page<ExamResponse> getExams(ExamFilter filter, Pageable pageable) {
@@ -28,11 +34,11 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamResponse getExamById(Long id) {
+    public DetailedExamResponse getExamById(Long id) {
         ExamEntity exam = examRepository.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
                         "Bài thi không tồn tại"));
-        return examMapper.toResponse(exam);
+        return examMapper.toDetailedResponse(exam);
     }
 
     @Override
@@ -59,9 +65,16 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public void deleteExam(Long id) {
-        if (!examRepository.existsById(id)) {
-            throw new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy", "Bài thi không tồn tại");
+    public void deleteExamKeepsParts(Long id) {
+        ExamEntity exam = examRepository.findById(id)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Lỗi dữ liệu",
+                        "Bài thi không tồn tại"));
+
+        if (exam.getParts() != null) {
+            for (PartEntity part : exam.getParts()) {
+                part.setExam(null);
+                partRepository.save(part);
+            }
         }
         examRepository.deleteById(id);
     }

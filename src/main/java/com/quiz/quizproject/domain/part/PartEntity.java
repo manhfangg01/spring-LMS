@@ -22,7 +22,7 @@ public class PartEntity extends BaseEntity {
     private String audioUrl;
 
     @ManyToOne
-    @JoinColumn(name = "exam_id")
+    @JoinColumn(name = "exam_id", nullable = true)
     private ExamEntity exam;
 
     @OneToMany(mappedBy = "part")

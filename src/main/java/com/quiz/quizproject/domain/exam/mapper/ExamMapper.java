@@ -2,6 +2,7 @@ package com.quiz.quizproject.domain.exam.mapper;
 
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.exam.dto.request.ExamRequest;
+import com.quiz.quizproject.domain.exam.dto.response.DetailedExamResponse;
 import com.quiz.quizproject.domain.exam.dto.response.ExamResponse;
 import org.mapstruct.*;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public interface ExamMapper {
     ExamEntity toEntity(ExamRequest examRequest);
 
     ExamResponse toResponse(ExamEntity entity);
+    DetailedExamResponse toDetailedResponse(ExamEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)

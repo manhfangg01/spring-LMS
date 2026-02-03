@@ -1,6 +1,7 @@
 package com.quiz.quizproject.domain.exam.controller;
 
 import com.quiz.quizproject.domain.exam.dto.request.ExamRequest;
+import com.quiz.quizproject.domain.exam.dto.response.DetailedExamResponse;
 import com.quiz.quizproject.domain.exam.dto.response.ExamResponse;
 import com.quiz.quizproject.domain.exam.filter.ExamFilter;
 import com.quiz.quizproject.domain.exam.service.ExamService;
@@ -40,7 +41,7 @@ public class ExamController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExamResponse> getExamById(@PathVariable Long id) {
+    public ResponseEntity<DetailedExamResponse> getExamById(@PathVariable Long id) {
         return ResponseEntity.ok(examService.getExamById(id));
     }
 
@@ -53,7 +54,7 @@ public class ExamController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
-        examService.deleteExam(id);
+        examService.deleteExamKeepsParts(id);
         return ResponseEntity.noContent().build();
     }
 }
