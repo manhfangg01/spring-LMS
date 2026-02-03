@@ -50,6 +50,10 @@ public class ExamServiceImpl implements ExamService {
         ExamEntity exam = examRepository.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
                         "Bài thi không tồn tại"));
+        if (examRepository.existsByCodeAndIdNot(request.code(), id)) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu",
+                    "Tiêu đề bài thi đã tồn tại");
+        }
         examMapper.updateEntityFromRequest(request, exam);
         return examMapper.toResponse(examRepository.save(exam));
     }

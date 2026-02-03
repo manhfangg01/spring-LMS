@@ -64,12 +64,16 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(Long id, UserRequest req) {
         UserEntity user = userRepo.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy","Người dùng không tồn tại"));
+        if (userRepo.existsByEmailAndIdNot(req.email(), id)) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST,
+                    "Lỗi nhập liệu", "Email đã được sử dụng bởi người dùng khác");
+        }
         RoleEntity role = roleRepo.findByName(req.roleName())
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu","Role không tồn tại"));
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(req.password()));
         String finalUserName = req.userName();
-        while(userRepo.existsByUserName(finalUserName)) {
+        while(userRepo.existsByUserNameAndIdNot(finalUserName,id)) {
              finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
         }
         user.setUserName(finalUserName);

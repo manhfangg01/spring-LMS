@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExamRepository extends JpaRepository<ExamEntity, Long>, JpaSpecificationExecutor<ExamEntity> {
     boolean existsByTitle(String title);
+    boolean existsByCodeAndIdNot(String title, Long id);
 }

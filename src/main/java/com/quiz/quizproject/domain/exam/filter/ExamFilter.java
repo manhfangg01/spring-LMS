@@ -14,6 +14,7 @@ import java.util.List;
 public class ExamFilter {
     private String title;
     private ExamType examType;
+    private String code;
 
     public Specification<ExamEntity> toSpecification() {
         return (root, query, cb) -> {
@@ -25,6 +26,10 @@ public class ExamFilter {
 
             if (examType != null) {
                 predicates.add(cb.equal(root.get("examType"), examType));
+            }
+
+            if(StringUtils.hasText(code)){
+                predicates.add(cb.equal(root.get("code"), code));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

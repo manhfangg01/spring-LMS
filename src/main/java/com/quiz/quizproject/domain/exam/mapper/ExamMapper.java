@@ -12,7 +12,6 @@ public interface ExamMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "examMaterials", ignore = true)
     @Mapping(target = "testAttempts", ignore = true)
     @Mapping(target = "totalQuestions", ignore = true)
     ExamEntity toEntity(ExamRequest examRequest);
@@ -23,8 +22,8 @@ public interface ExamMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "examMaterials", ignore = true)
     @Mapping(target = "testAttempts", ignore = true)
     @Mapping(target = "totalQuestions", ignore = true)
+    @Mapping(target = "code", ignore = true)// Xử lý trùng
     void updateEntityFromRequest(ExamRequest request, @MappingTarget ExamEntity entity);
 }

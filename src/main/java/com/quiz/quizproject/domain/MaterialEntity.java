@@ -16,14 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MaterialEntity extends BaseEntity {
+    // This is equal to QuestionGroup
     private String title;
     private String contentText;
     private String audioUrl;
 
-    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExamMaterialEntity> examMaterials;
+    @ManyToOne
+    @JoinColumn(name = "part_id")
+    private PartEntity part;
 
     @OneToMany(mappedBy = "material", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionEntity> questions;
-
 }

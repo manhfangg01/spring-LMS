@@ -12,7 +12,9 @@ public record ExamRequest(
         @NotNull(message = "Thời lượng không được để trống")
         Long durationInSeconds,
         @NotBlank(message = "Mô tả không được để trống")
-        String description
+        String description,
+        @NotBlank(message = "Mã bài thi không được để trống")
+        String code
 )
 {
 }

@@ -1,7 +1,7 @@
 package com.quiz.quizproject.domain.exam;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.ExamMaterialEntity;
+import com.quiz.quizproject.domain.PartEntity;
 import com.quiz.quizproject.domain.TestAttemptEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
@@ -23,9 +23,11 @@ public class ExamEntity extends BaseEntity {
     private Long durationInSeconds;
     private String totalQuestions;
     private String description;
+    @Column(unique = true)
+    private String code; // for searching-purposes
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExamMaterialEntity> examMaterials;
+    private List<PartEntity> parts;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TestAttemptEntity> testAttempts;
