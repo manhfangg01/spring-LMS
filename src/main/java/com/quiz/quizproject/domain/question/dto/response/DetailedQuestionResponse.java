@@ -3,7 +3,7 @@ package com.quiz.quizproject.domain.question.dto.response;
 import com.quiz.quizproject.util.constant.QuestionType;
 import java.util.List;
 
-public record QuestionResponse(
+public record DetailedQuestionResponse(
         Long id,
         String content,
         QuestionType questionType,
@@ -11,5 +11,6 @@ public record QuestionResponse(
         String explanation,
         Integer orderIndex,
         Long questionGroupId,
-        List<QuestionOptionResponse> questionOptions) {
+        List<QuestionOptionResponse> questionOptions
+) {
 }

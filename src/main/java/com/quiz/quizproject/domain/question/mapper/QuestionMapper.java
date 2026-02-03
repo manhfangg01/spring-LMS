@@ -3,7 +3,7 @@ package com.quiz.quizproject.domain.question.mapper;
 import com.quiz.quizproject.domain.question.dto.request.QuestionOptionRequest;
 import com.quiz.quizproject.domain.question.dto.request.QuestionRequest;
 import com.quiz.quizproject.domain.question.dto.response.QuestionOptionResponse;
-import com.quiz.quizproject.domain.question.dto.response.QuestionResponse;
+import com.quiz.quizproject.domain.question.dto.response.DetailedQuestionResponse;
 import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.question.entity.QuestionOptionEntity;
 import org.mapstruct.*;
@@ -28,7 +28,7 @@ public interface QuestionMapper {
     }
 
     @Mapping(target = "questionGroupId", source = "questionGroup.id")
-    QuestionResponse toResponse(QuestionEntity entity);
+    DetailedQuestionResponse toResponse(QuestionEntity entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

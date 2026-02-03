@@ -1,8 +1,8 @@
 package com.quiz.quizproject.domain.exam;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.PartEntity;
-import com.quiz.quizproject.domain.TestAttemptEntity;
+import com.quiz.quizproject.domain.part.PartEntity;
+import com.quiz.quizproject.domain.testAttempt.TestAttemptEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
 import lombok.*;

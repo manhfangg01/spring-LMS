@@ -1,6 +1,7 @@
-package com.quiz.quizproject.domain;
+package com.quiz.quizproject.domain.part;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;

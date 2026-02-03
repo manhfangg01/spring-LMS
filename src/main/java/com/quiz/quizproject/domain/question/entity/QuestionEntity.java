@@ -2,8 +2,8 @@ package com.quiz.quizproject.domain.question.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.QuestionGroupEntity;
-import com.quiz.quizproject.domain.UserAnswerEntity;
+import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
+import com.quiz.quizproject.domain.userAnswer.UserAnswerEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

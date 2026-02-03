@@ -3,7 +3,7 @@ package com.quiz.quizproject.domain.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.domain.RoleEntity;
-import com.quiz.quizproject.domain.TestAttemptEntity;
+import com.quiz.quizproject.domain.testAttempt.TestAttemptEntity;
 import com.quiz.quizproject.util.constant.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;

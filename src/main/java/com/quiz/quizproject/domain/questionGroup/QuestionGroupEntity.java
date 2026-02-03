@@ -1,6 +1,7 @@
-package com.quiz.quizproject.domain;
+package com.quiz.quizproject.domain.questionGroup;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.util.constant.QuestionType;
 import jakarta.persistence.*;
@@ -18,9 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionGroupEntity extends BaseEntity {
     // This is equal to QuestionGroup
-    private String title;
-    private String contentText;
-    private String audioUrl;
     private String imageUrl;
     private String instructions;
     @Enumerated(EnumType.STRING)

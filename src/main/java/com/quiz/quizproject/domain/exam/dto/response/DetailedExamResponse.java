@@ -1,12 +1,13 @@
 package com.quiz.quizproject.domain.exam.dto.response;
 
-public record ExamResponse(
+
+public record DetailedExamResponse(
         Long id,
         String title,
         String code,
         String examType,
         Long durationInSeconds,
         String description,
-        String totalQuestions
+        Integer totalQuestions
 ) {
 }

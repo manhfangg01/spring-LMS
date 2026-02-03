@@ -1,7 +1,7 @@
 package com.quiz.quizproject.domain.question.service.impl;
 
 import com.quiz.quizproject.domain.question.dto.request.QuestionRequest;
-import com.quiz.quizproject.domain.question.dto.response.QuestionResponse;
+import com.quiz.quizproject.domain.question.dto.response.DetailedQuestionResponse;
 import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.question.mapper.QuestionMapper;
 import com.quiz.quizproject.domain.question.repository.QuestionRepository;
@@ -23,13 +23,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionResponse createQuestion(QuestionRequest request) {
+    public DetailedQuestionResponse createQuestion(QuestionRequest request) {
         QuestionEntity question = questionMapper.toEntity(request);
         return questionMapper.toResponse(questionRepository.save(question));
     }
 
     @Override
-    public QuestionResponse getQuestionById(Long id) {
+    public DetailedQuestionResponse getQuestionById(Long id) {
         return questionRepository.findById(id)
                 .map(questionMapper::toResponse)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
@@ -37,14 +37,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
+    public Page<DetailedQuestionResponse> getAllQuestions(Pageable pageable) {
         return questionRepository.findAll(pageable)
                 .map(questionMapper::toResponse);
     }
 
     @Override
     @Transactional
-    public QuestionResponse updateQuestion(Long id, QuestionRequest request) {
+    public DetailedQuestionResponse updateQuestion(Long id, QuestionRequest request) {
         QuestionEntity question = questionRepository.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
                         "Câu hỏi không tồn tại"));

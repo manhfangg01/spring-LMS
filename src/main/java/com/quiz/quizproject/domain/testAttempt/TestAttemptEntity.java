@@ -1,6 +1,7 @@
-package com.quiz.quizproject.domain;
+package com.quiz.quizproject.domain.testAttempt;
 
 import com.quiz.quizproject.base.BaseEntity;
+import com.quiz.quizproject.domain.userAnswer.UserAnswerEntity;
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.user.UserEntity;
 import com.quiz.quizproject.util.constant.TestAttemptStatus;

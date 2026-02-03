@@ -1,7 +1,7 @@
 package com.quiz.quizproject.domain.question.controller;
 
 import com.quiz.quizproject.domain.question.dto.request.QuestionRequest;
-import com.quiz.quizproject.domain.question.dto.response.QuestionResponse;
+import com.quiz.quizproject.domain.question.dto.response.DetailedQuestionResponse;
 import com.quiz.quizproject.domain.question.service.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PostMapping
-    public ResponseEntity<QuestionResponse> createQuestion(@Valid @RequestBody QuestionRequest request) {
+    public ResponseEntity<DetailedQuestionResponse> createQuestion(@Valid @RequestBody QuestionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(questionService.createQuestion(request));
     }
 
     @GetMapping
-    public ResponseEntity<Page<QuestionResponse>> getAllQuestions(
+    public ResponseEntity<Page<DetailedQuestionResponse>> getAllQuestions(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -39,12 +39,12 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id) {
+    public ResponseEntity<DetailedQuestionResponse> getQuestionById(@PathVariable Long id) {
         return ResponseEntity.ok(questionService.getQuestionById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionResponse> updateQuestion(
+    public ResponseEntity<DetailedQuestionResponse> updateQuestion(
             @PathVariable Long id,
             @Valid @RequestBody QuestionRequest request) {
         return ResponseEntity.ok(questionService.updateQuestion(id, request));
