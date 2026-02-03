@@ -25,7 +25,7 @@ public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
     private final ExamMapper examMapper;
-    private  final PartRepository partRepository;
+    private final PartRepository partRepository;
 
     @Override
     public Page<ExamResponse> getExams(ExamFilter filter, Pageable pageable) {
@@ -36,16 +36,16 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public DetailedExamResponse getExamById(Long id) {
         ExamEntity exam = examRepository.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
-                        "Bài thi không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found",
+                        "Exam not found"));
         return examMapper.toDetailedResponse(exam);
     }
 
     @Override
     public ExamResponse createExam(ExamRequest request) {
         if (examRepository.existsByTitle(request.title())) {
-            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu",
-                    "Tiêu đề bài thi đã tồn tại");
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                    "Exam title already exists");
         }
         ExamEntity exam = examMapper.toEntity(request);
         return examMapper.toResponse(examRepository.save(exam));
@@ -54,11 +54,11 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamResponse updateExam(Long id, ExamRequest request) {
         ExamEntity exam = examRepository.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
-                        "Bài thi không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found",
+                        "Exam not found"));
         if (examRepository.existsByCodeAndIdNot(request.code(), id)) {
-            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu",
-                    "Tiêu đề bài thi đã tồn tại");
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                    "Exam code already exists");
         }
         examMapper.updateEntityFromRequest(request, exam);
         return examMapper.toResponse(examRepository.save(exam));
@@ -67,8 +67,8 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public void deleteExamKeepsParts(Long id) {
         ExamEntity exam = examRepository.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Lỗi dữ liệu",
-                        "Bài thi không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Data error",
+                        "Exam not found"));
 
         if (exam.getParts() != null) {
             for (PartEntity part : exam.getParts()) {

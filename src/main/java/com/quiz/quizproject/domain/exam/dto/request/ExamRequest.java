@@ -5,16 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ExamRequest(
-        @NotBlank(message = "Tiêu đề không được để trống")
-        String title,
-        @NotNull(message = "Loại bài thi không được để trống")
-        ExamType examType,
-        @NotNull(message = "Thời lượng không được để trống")
-        Long durationInSeconds,
-        @NotBlank(message = "Mô tả không được để trống")
-        String description,
-        @NotBlank(message = "Mã bài thi không được để trống")
-        String code
-)
-{
+                @NotBlank(message = "Title cannot be empty") String title,
+                @NotNull(message = "Exam type cannot be null") ExamType examType,
+                @NotNull(message = "Duration cannot be null") Long durationInSeconds,
+                @NotBlank(message = "Description cannot be empty") String description,
+                @NotBlank(message = "Exam code cannot be empty") String code) {
 }

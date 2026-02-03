@@ -30,18 +30,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(UserRequest req) {
         if (userRepo.existsByEmail(req.email())) {
-            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu","Email đã tồn tại"); // Nên dùng Custom Exception
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error", "Email already exists"); // Should
+                                                                                                                   // use
+                                                                                                                   // Custom
+                                                                                                                   // Exception
         }
 
         UserEntity user = userMapper.toEntity(req);
         String finalUserName;
         do {
             finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
-        }while(userRepo.existsByUserName(finalUserName));
+        } while (userRepo.existsByUserName(finalUserName));
         user.setUserName(finalUserName);
         user.setPassword(passwordEncoder.encode(req.password()));
         RoleEntity role = roleRepo.findByName(req.roleName())
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu","Role không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                        "Role not found"));
         user.setRole(role);
 
         return userMapper.toResponse(userRepo.save(user));
@@ -56,25 +60,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long id) {
         UserEntity user = userRepo.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy","Người dùng không tồn tại"));
+                .orElseThrow(
+                        () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found", "User not found"));
         return userMapper.toResponse(user);
     }
 
     @Override
     public UserResponse updateUser(Long id, UserRequest req) {
         UserEntity user = userRepo.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy","Người dùng không tồn tại"));
+                .orElseThrow(
+                        () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found", "User not found"));
         if (userRepo.existsByEmailAndIdNot(req.email(), id)) {
             throw new AppException("ApiException", HttpStatus.BAD_REQUEST,
-                    "Lỗi nhập liệu", "Email đã được sử dụng bởi người dùng khác");
+                    "Input error", "Email is already used by another user");
         }
         RoleEntity role = roleRepo.findByName(req.roleName())
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu","Role không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                        "Role not found"));
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(req.password()));
         String finalUserName = req.userName();
-        while(userRepo.existsByUserNameAndIdNot(finalUserName,id)) {
-             finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
+        while (userRepo.existsByUserNameAndIdNot(finalUserName, id)) {
+            finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
         }
         user.setUserName(finalUserName);
         userMapper.updateEntityFromRequest(req, user);

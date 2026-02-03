@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +45,13 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public String signUp(SignUpRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Lỗi đăng kí", "Email đã được sử dụng!");
+            throw new AppException("ApiException", HttpStatus.UNAUTHORIZED, "Registration error",
+                    "Email is already in use!");
         }
-        String finalUserName="";
+        String finalUserName;
         do {
-             finalUserName = RandomHelper.generateUniqueUserName(request.userName());
-        }while(userRepository.existsByUserName(finalUserName));
+            finalUserName = RandomHelper.generateUniqueUserName(request.userName());
+        } while (userRepository.existsByUserName(finalUserName));
 
         UserEntity user = new UserEntity();
         user.setUserName(finalUserName);
@@ -60,23 +60,23 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus(UserStatus.ACTIVE);
 
         RoleEntity userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Role không tồn tại!", null));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED, "Role not found!", null));
         user.setRole(userRole);
 
         userRepository.save(user);
 
-        return "Chúc mừng đã đăng ký thành công, với username: " + finalUserName;
+        return "Registration successful, username: " + finalUserName;
     }
 
     @Override
     @Transactional
     public AuthResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
-        );
+                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         UserEntity user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.UNAUTHORIZED,"Email người dùng không không tồn tại!",null));
+                .orElseThrow(
+                        () -> new AppException("ApiException", HttpStatus.UNAUTHORIZED, "User email not found!", null));
 
         UserDetails userDetails = buildUserDetails(user);
 
@@ -99,11 +99,13 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse refreshToken(String requestRefreshToken) {
         RefreshTokenEntity tokenEntity = refreshTokenRepository.findByValue(requestRefreshToken)
-                .orElseThrow(() -> new AppException("TokenException", HttpStatus.UNAUTHORIZED,"RefreshToken không tồn tại!", null));
+                .orElseThrow(() -> new AppException("TokenException", HttpStatus.UNAUTHORIZED,
+                        "RefreshToken not found!", null));
 
         if (!jwtService.isRefreshTokenValid(requestRefreshToken, tokenEntity)) {
             refreshTokenRepository.delete(tokenEntity);
-            throw new AppException("TokenException", HttpStatus.UNAUTHORIZED,"RefreshToken không đúng hoặc hết hạn!",null);
+            throw new AppException("TokenException", HttpStatus.UNAUTHORIZED, "RefreshToken is invalid or expired!",
+                    null);
         }
 
         UserEntity user = tokenEntity.getUser();

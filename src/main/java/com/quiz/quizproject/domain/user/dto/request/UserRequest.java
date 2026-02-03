@@ -6,18 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UserRequest(
-        @NotBlank(message = "Email không được để trống")
-        @Email(message = "Email không đúng định dạng")
-        String email,
+                @NotBlank(message = "Email cannot be empty") @Email(message = "Invalid email format") String email,
 
-        @NotBlank(message = "Mật khẩu không được để trống")
-        @Size(min = 6, message = "Mật khẩu phải từ 6 ký tự")
-        String password,
+                @NotBlank(message = "Password cannot be empty") @Size(min = 6, message = "Password must be at least 6 characters") String password,
 
-        @NotBlank(message = "Họ tên không được để trống")
-        String userName,
-        String roleName,
-        UserStatus status
+                @NotBlank(message = "Name cannot be empty") String userName,
+                String roleName,
+                UserStatus status
 
 ) {
 }

@@ -11,11 +11,13 @@ public enum UserStatus {
 
     @JsonCreator
     public static UserStatus fromString(String value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         try {
             return UserStatus.valueOf(value.toUpperCase());
         } catch (Exception e) {
-            throw new AppException("IllegalArgumentException", HttpStatus.BAD_REQUEST, "Lỗi nhập liệu", "Trạng thái người dùng không hợp lệ. Chỉ chấp nhận: ACTIVE, INACTIVE, BANNED");
+            throw new AppException("IllegalArgumentException", HttpStatus.BAD_REQUEST, "Input error",
+                    "Invalid user status. Accepted values: ACTIVE, INACTIVE, BANNED");
         }
     }
 }

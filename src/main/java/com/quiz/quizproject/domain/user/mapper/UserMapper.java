@@ -18,14 +18,16 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     UserEntity toEntity(UserRequest request);
 
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)// Nhờ dòng này khi 1 trường bị null thì nó sẽ không set null mà nó sẽ set bằng giá trị cũ
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE) // Thanks to this line, if
+                                                                                             // a field is null, it will
+                                                                                             // not set it to null but
+                                                                                             // keep the old value
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "role", ignore = true) // tự validate role ở service
-    @Mapping(target = "password", ignore = true) // tự validate role ở service
-    @Mapping(target = "userName", ignore = true) // tự xử lý không trùng
+    @Mapping(target = "role", ignore = true) // manually handled in service
+    @Mapping(target = "password", ignore = true) // manually handled in service
+    @Mapping(target = "userName", ignore = true) // manually handled uniqueness
     void updateEntityFromRequest(UserRequest request, @MappingTarget UserEntity entity);
 
 }
