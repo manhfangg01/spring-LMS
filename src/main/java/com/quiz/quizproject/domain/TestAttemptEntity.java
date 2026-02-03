@@ -9,8 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Table(name = "test_attempts")
@@ -21,9 +24,24 @@ import java.time.LocalDateTime;
 public class TestAttemptEntity extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime submitTime;
-    private Double score;
     @Enumerated(EnumType.STRING)
     private TestAttemptStatus status;
+
+    @Column(name = "total_correct")
+    private Integer totalCorrect = 0;
+
+    @Column(name = "total_incorrect")
+    private Integer totalIncorrect = 0;
+
+    @Column(name = "total_skipped")
+    private Integer totalSkipped = 0;
+
+    @Column(name = "total_score")
+    private Double totalScore = 0.0;  // based on IELTS band
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "skill_breakdown", columnDefinition = "json")
+    private Map<String, Object> skillBreakdown;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
