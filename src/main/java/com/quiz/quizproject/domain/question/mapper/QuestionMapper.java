@@ -14,7 +14,7 @@ public interface QuestionMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "material", ignore = true)
+    @Mapping(target = "questionGroup", ignore = true)
     @Mapping(target = "userAnswers", ignore = true)
     @Mapping(target = "questionOptions", source = "questionOptions")
     QuestionEntity toEntity(QuestionRequest request);
@@ -27,7 +27,7 @@ public interface QuestionMapper {
         }
     }
 
-    @Mapping(target = "materialId", source = "material.id")
+    @Mapping(target = "questionGroupId", source = "questionGroup.id")
     QuestionResponse toResponse(QuestionEntity entity);
 
     @Mapping(target = "id", ignore = true)
@@ -42,7 +42,7 @@ public interface QuestionMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "material", ignore = true)
+    @Mapping(target = "questionGroup", ignore = true)
     @Mapping(target = "userAnswers", ignore = true)
     @Mapping(target = "questionOptions", ignore = true)
     void updateEntityFromRequest(QuestionRequest request, @MappingTarget QuestionEntity entity);

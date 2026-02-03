@@ -13,6 +13,6 @@ public record QuestionRequest(
         QuestionType questionType,
         String explanation,
         Integer orderIndex,
-        Long materialId,
+        Long questionGroupId,
         List<QuestionOptionRequest> questionOptions) {
 }

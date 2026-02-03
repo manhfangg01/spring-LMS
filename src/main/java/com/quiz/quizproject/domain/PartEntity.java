@@ -25,5 +25,5 @@ public class PartEntity extends BaseEntity {
     private ExamEntity exam;
 
     @OneToMany(mappedBy = "part")
-    private List<MaterialEntity > materials;
+    private List<QuestionGroupEntity> questionGroups;
 }

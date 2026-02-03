@@ -2,9 +2,8 @@ package com.quiz.quizproject.domain.question.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.MaterialEntity;
+import com.quiz.quizproject.domain.QuestionGroupEntity;
 import com.quiz.quizproject.domain.UserAnswerEntity;
-import com.quiz.quizproject.util.constant.QuestionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,19 +20,14 @@ public class QuestionEntity extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private QuestionType questionType;
-
     @Column(columnDefinition = "TEXT")
     private String explanation;
 
     private Integer orderIndex;
 
-    private String instructions;
-
     @ManyToOne()
-    @JoinColumn(name = "material_id")
-    private MaterialEntity material;
+    @JoinColumn(name = "question_group_id")
+    private QuestionGroupEntity questionGroup;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionOptionEntity> questionOptions = new ArrayList<>();

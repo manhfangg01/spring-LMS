@@ -10,6 +10,6 @@ public record QuestionResponse(
         String correctText,
         String explanation,
         Integer orderIndex,
-        Long materialId,
+        Long questionGroupId,
         List<QuestionOptionResponse> questionOptions) {
 }
