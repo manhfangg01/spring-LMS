@@ -25,7 +25,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponse createQuestion(QuestionRequest request) {
         QuestionEntity question = questionMapper.toEntity(request);
-        // Relationship is already handled by Mapper @AfterMapping
         return questionMapper.toResponse(questionRepository.save(question));
     }
 

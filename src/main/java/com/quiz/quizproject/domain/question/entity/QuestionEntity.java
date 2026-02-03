@@ -24,13 +24,12 @@ public class QuestionEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
-    // Dành cho câu hỏi điền từ
-    private String correctText;
-
     @Column(columnDefinition = "TEXT")
     private String explanation;
 
     private Integer orderIndex;
+
+    private String instructions;
 
     @ManyToOne()
     @JoinColumn(name = "material_id")

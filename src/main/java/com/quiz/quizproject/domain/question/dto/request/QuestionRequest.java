@@ -11,7 +11,6 @@ public record QuestionRequest(
         String content,
         @NotNull(message = "Loại câu hỏi không được để trống")
         QuestionType questionType,
-        String correctText,
         String explanation,
         Integer orderIndex,
         Long materialId,
