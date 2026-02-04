@@ -7,9 +7,6 @@ import java.util.List;
 
 public record DetailedQuestionGroupResponse(
         Long id,
-        String title,
-        String contentText,
-        String audioUrl,
         String imageUrl,
         String instructions,
         QuestionType type,

@@ -2,7 +2,7 @@ package com.quiz.quizproject.domain.questionGroup.service.impl;
 
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.part.repo.PartRepository;
-import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
+import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.filter.QuestionGroupFilter;

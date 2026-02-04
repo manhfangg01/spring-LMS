@@ -2,6 +2,7 @@ package com.quiz.quizproject.domain.part.service.impl;
 
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.part.dto.request.PartRequest;
+import com.quiz.quizproject.domain.part.dto.response.DetailedPartResponse;
 import com.quiz.quizproject.domain.part.dto.response.PartResponse;
 import com.quiz.quizproject.domain.part.filter.PartFilter;
 import com.quiz.quizproject.domain.part.mapper.PartMapper;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PartServiceImpl implements PartService {
 
     private final PartRepository partRepo;
@@ -26,11 +28,10 @@ public class PartServiceImpl implements PartService {
     private final ExamRepository examRepo;
 
     @Override
-    @Transactional
-    public PartResponse createPart(PartRequest req) {
+    public PartResponse createPart(PartRequest req, Long examId) {
         PartEntity part = partMapper.toEntity(req);
-        if (req.examId() != null) {
-            ExamEntity exam = examRepo.findById(req.examId())
+        if (examId != null) {
+            ExamEntity exam = examRepo.findById(examId)
                     .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
                             "Exam not found"));
             part.setExam(exam);
@@ -45,31 +46,19 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartResponse getPartById(Long id) {
+    public DetailedPartResponse getPartById(Long id) {
         PartEntity part = partRepo.findById(id)
                 .orElseThrow(
                         () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found", "Part not found"));
-        return partMapper.toResponse(part);
+        return partMapper.toDetailedResponse(part);
     }
 
     @Override
-    @Transactional
     public PartResponse updatePart(Long id, PartRequest req) {
         PartEntity part = partRepo.findById(id)
                 .orElseThrow(
                         () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found", "Part not found"));
-
         partMapper.updateEntityFromRequest(req, part);
-
-        if (req.examId() != null) {
-            ExamEntity exam = examRepo.findById(req.examId())
-                    .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
-                            "Exam not found"));
-            part.setExam(exam);
-        } else {
-            part.setExam(null);
-        }
-
         return partMapper.toResponse(partRepo.save(part));
     }
 

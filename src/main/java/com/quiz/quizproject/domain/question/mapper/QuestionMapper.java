@@ -27,7 +27,6 @@ public interface QuestionMapper {
         }
     }
 
-    @Mapping(target = "questionGroupId", source = "questionGroup.id")
     DetailedQuestionResponse toResponse(QuestionEntity entity);
 
     @Mapping(target = "id", ignore = true)

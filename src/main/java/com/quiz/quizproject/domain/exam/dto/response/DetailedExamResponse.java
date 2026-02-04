@@ -2,6 +2,7 @@ package com.quiz.quizproject.domain.exam.dto.response;
 
 
 import com.quiz.quizproject.domain.part.dto.response.DetailedPartResponse;
+import com.quiz.quizproject.util.constant.ExamStatus;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public record DetailedExamResponse(
         Long durationInSeconds,
         String description,
         Integer totalQuestions,
+        ExamStatus examStatus,
         List<DetailedPartResponse> parts
 ) {
 }

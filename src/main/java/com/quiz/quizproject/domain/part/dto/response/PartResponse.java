@@ -9,6 +9,5 @@ public record PartResponse(
                 ExamType examType,
                 String passage,
                 String audioUrl,
-                String description,
-                Long examId) {
+                String description) {
 }

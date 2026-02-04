@@ -1,6 +1,6 @@
 package com.quiz.quizproject.domain.questionGroup.mapper;
 
-import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
+import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
 import org.mapstruct.*;

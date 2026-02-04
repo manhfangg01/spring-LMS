@@ -10,6 +10,7 @@ import com.quiz.quizproject.domain.exam.repo.ExamRepository;
 import com.quiz.quizproject.domain.exam.service.ExamService;
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.part.repo.PartRepository;
+import com.quiz.quizproject.util.constant.ExamStatus;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,16 @@ public class ExamServiceImpl implements ExamService {
         examMapper.updateEntityFromRequest(request, exam);
         return examMapper.toResponse(examRepository.save(exam));
     }
+
+    @Override
+    public ExamResponse changeStatus(Long id) {
+        ExamEntity exam = examRepository.findById(id)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found",
+                        "Exam not found"));
+        exam.setExamStatus(ExamStatus.PUBLISHED);
+        return examMapper.toResponse(examRepository.save(exam));
+    }
+
 
     @Override
     public void deleteExamKeepsParts(Long id) {

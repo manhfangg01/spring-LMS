@@ -40,21 +40,26 @@ public class ExamController {
         return ResponseEntity.ok(examService.getExams(filterCriteria, pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DetailedExamResponse> getExamById(@PathVariable Long id) {
-        return ResponseEntity.ok(examService.getExamById(id));
+    @GetMapping("/{examId}")
+    public ResponseEntity<DetailedExamResponse> getExamById(@PathVariable Long examId) {
+        return ResponseEntity.ok(examService.getExamById(examId));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{examId}")
     public ResponseEntity<ExamResponse> updateExam(
-            @PathVariable Long id,
+            @PathVariable Long examId,
             @Valid @RequestBody ExamRequest request) {
-        return ResponseEntity.ok(examService.updateExam(id, request));
+        return ResponseEntity.ok(examService.updateExam(examId, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExam(@PathVariable Long id) {
-        examService.deleteExamKeepsParts(id);
+    @PatchMapping("/{examId}")
+    public ResponseEntity<ExamResponse> changeStatus(@PathVariable Long examId) {
+        return ResponseEntity.ok(examService.changeStatus(examId));
+    }
+
+    @DeleteMapping("/{examId}")
+    public ResponseEntity<Void> deleteExam(@PathVariable Long examId) {
+        examService.deleteExamKeepsParts(examId);
         return ResponseEntity.noContent().build();
     }
 }

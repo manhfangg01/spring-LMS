@@ -1,6 +1,6 @@
 package com.quiz.quizproject.domain.questionGroup.filter;
 
-import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
+import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
 import com.quiz.quizproject.util.constant.QuestionType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Data;

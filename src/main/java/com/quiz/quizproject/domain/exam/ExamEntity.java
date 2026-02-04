@@ -3,6 +3,7 @@ package com.quiz.quizproject.domain.exam;
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.testAttempt.TestAttemptEntity;
+import com.quiz.quizproject.util.constant.ExamStatus;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,8 @@ public class ExamEntity extends BaseEntity {
     private String description;
     @Column(unique = true)
     private String code; // for searching-purposes
+    @Enumerated(EnumType.STRING)
+    private ExamStatus examStatus;
 
     @OneToMany(mappedBy = "exam", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<PartEntity> parts;// soft delete với parts

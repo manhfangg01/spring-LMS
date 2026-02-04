@@ -10,6 +10,5 @@ public record PartRequest(
                 ExamType examType,
                 String passage,
                 String audioUrl,
-                String description,
-                Long examId) {
+                String description) {
 }

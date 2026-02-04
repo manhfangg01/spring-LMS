@@ -38,21 +38,21 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllQuestions(pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DetailedQuestionResponse> getQuestionById(@PathVariable Long id) {
-        return ResponseEntity.ok(questionService.getQuestionById(id));
+    @GetMapping("/{questionId}")
+    public ResponseEntity<DetailedQuestionResponse> getQuestionById(@PathVariable Long questionId) {
+        return ResponseEntity.ok(questionService.getQuestionById(questionId));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{questionId}")
     public ResponseEntity<DetailedQuestionResponse> updateQuestion(
-            @PathVariable Long id,
+            @PathVariable Long questionId,
             @Valid @RequestBody QuestionRequest request) {
-        return ResponseEntity.ok(questionService.updateQuestion(id, request));
+        return ResponseEntity.ok(questionService.updateQuestion(questionId, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
-        questionService.deleteQuestion(id);
+    @DeleteMapping("/{questionId}")
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
+        questionService.deleteQuestion(questionId);
         return ResponseEntity.noContent().build();
     }
 }

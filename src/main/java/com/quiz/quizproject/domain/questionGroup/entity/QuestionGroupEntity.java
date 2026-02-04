@@ -1,4 +1,4 @@
-package com.quiz.quizproject.domain.questionGroup;
+package com.quiz.quizproject.domain.questionGroup.entity;
 
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.domain.part.PartEntity;
@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionGroupEntity extends BaseEntity {
-    // This is equal to QuestionGroup
     private String imageUrl;
     private String instructions;
     @Enumerated(EnumType.STRING)

@@ -1,5 +1,7 @@
 package com.quiz.quizproject.domain.exam.dto.response;
 
+import com.quiz.quizproject.util.constant.ExamStatus;
+
 public record ExamResponse(
         Long id,
         String title,
@@ -7,6 +9,7 @@ public record ExamResponse(
         String examType,
         Long durationInSeconds,
         String description,
-        String totalQuestions
+        String totalQuestions,
+        ExamStatus examStatus
 ) {
 }
