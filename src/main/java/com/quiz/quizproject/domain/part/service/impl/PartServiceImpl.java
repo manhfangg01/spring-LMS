@@ -18,6 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -69,4 +73,22 @@ public class PartServiceImpl implements PartService {
         }
         partRepo.deleteById(id);
     }
+
+    @Override
+    public void reorderParts(Long examId, List<Long> orderedIds) {
+        List<PartEntity> parts = partRepo.findAllByExamId(examId);
+        Map<Long, PartEntity> partMap = parts.stream()
+                .collect(Collectors.toMap(PartEntity::getId, p -> p));
+
+        for (int i = 0; i < orderedIds.size(); i++) {
+            Long id = orderedIds.get(i);
+            PartEntity part = partMap.get(id);
+
+            if (part != null) {
+                part.setOrderIndex(i);
+            }
+        }
+    }
+
+
 }

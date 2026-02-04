@@ -7,6 +7,8 @@ import com.quiz.quizproject.domain.part.filter.PartFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface PartService {
     Page<PartResponse> getAllParts(Pageable pageable, PartFilter filter);
 
@@ -17,4 +19,6 @@ public interface PartService {
     PartResponse updatePart(Long id, PartRequest request);
 
     void deletePart(Long id);
+
+    void reorderParts(Long examId, List<Long> orderedIds);
 }

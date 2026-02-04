@@ -15,18 +15,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/question-groups")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class QuestionGroupController {
     private final QuestionGroupService questionGroupService;
 
-    @PostMapping
+    @PostMapping("/parts/{partId}/groups")
     public ResponseEntity<QuestionGroupResponse> createQuestionGroup(@Valid @RequestBody QuestionGroupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(questionGroupService.createQuestionGroup(request));
     }
 
-    @GetMapping
+    @GetMapping("groups")
     public ResponseEntity<Page<QuestionGroupResponse>> getAllQuestionGroups(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -39,21 +39,21 @@ public class QuestionGroupController {
         return ResponseEntity.ok(questionGroupService.getAllQuestionGroups(pageable, filterCriteria));
     }
 
-    @GetMapping("/{questionGroupId}")
-    public ResponseEntity<QuestionGroupResponse> getQuestionGroupById(@PathVariable Long questionGroupId) {
-        return ResponseEntity.ok(questionGroupService.getQuestionGroupById(questionGroupId));
+    @GetMapping("groups/{groupId}")
+    public ResponseEntity<QuestionGroupResponse> getQuestionGroupById(@PathVariable Long groupId) {
+        return ResponseEntity.ok(questionGroupService.getQuestionGroupById(groupId));
     }
 
-    @PutMapping("/{questionGroupId}")
+    @PutMapping("groups/{groupId}")
     public ResponseEntity<QuestionGroupResponse> updateQuestionGroup(
-            @PathVariable Long questionGroupId,
+            @PathVariable Long groupId,
             @Valid @RequestBody QuestionGroupRequest request) {
-        return ResponseEntity.ok(questionGroupService.updateQuestionGroup(questionGroupId, request));
+        return ResponseEntity.ok(questionGroupService.updateQuestionGroup(groupId, request));
     }
 
-    @DeleteMapping("/{questionGroupId}")
-    public ResponseEntity<Void> deleteQuestionGroup(@PathVariable Long questionGroupId) {
-        questionGroupService.deleteQuestionGroup(questionGroupId);
+    @DeleteMapping("groups/{groupId}")
+    public ResponseEntity<Void> deleteQuestionGroup(@PathVariable Long groupId) {
+        questionGroupService.deleteQuestionGroup(groupId);
         return ResponseEntity.noContent().build();
     }
 }
