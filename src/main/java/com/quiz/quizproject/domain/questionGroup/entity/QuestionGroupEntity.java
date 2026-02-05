@@ -20,6 +20,7 @@ import java.util.List;
 public class QuestionGroupEntity extends BaseEntity {
     private String imageUrl;
     private String instructions;
+    private Integer orderIndex;
     @Enumerated(EnumType.STRING)
     private QuestionType type;
 

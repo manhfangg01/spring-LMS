@@ -14,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.PublicKey;
 import java.util.List;
 
 @RestController
@@ -24,10 +22,10 @@ import java.util.List;
 public class PartController {
     private final PartService partService;
 
-    @PostMapping("/exams/{id}/parts")
-    public ResponseEntity<PartResponse> createPart(@Valid @RequestBody PartRequest request, @PathVariable Long id) {
+    @PostMapping("/exams/{examId}/parts")
+    public ResponseEntity<PartResponse> createPart(@Valid @RequestBody PartRequest request, @PathVariable Long examId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(partService.createPart(request, id));
+                .body(partService.createPart(request, examId));
     }
 
     @GetMapping("parts")
@@ -50,7 +48,7 @@ public class PartController {
         return ResponseEntity.ok(partService.getPartById(partId));
     }
 
-    @PutMapping("parts/{partId}")
+    @PatchMapping("parts/{partId}")
     public ResponseEntity<PartResponse> updatePart(
             @PathVariable Long partId,
             @Valid @RequestBody PartRequest request) {

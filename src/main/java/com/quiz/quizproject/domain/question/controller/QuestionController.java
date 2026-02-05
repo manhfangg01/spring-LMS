@@ -13,20 +13,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api/questions")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @PostMapping
-    public ResponseEntity<DetailedQuestionResponse> createQuestion(@Valid @RequestBody QuestionRequest request) {
+    @PostMapping("/questionGroups/{groupId}/questions")
+    public ResponseEntity<DetailedQuestionResponse> createQuestion(@Valid @RequestBody QuestionRequest request,
+            @PathVariable Long groupId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(questionService.createQuestion(request));
+                .body(questionService.createQuestion(groupId, request));
     }
 
-    @GetMapping
+    @GetMapping("questions")
     public ResponseEntity<Page<DetailedQuestionResponse>> getAllQuestions(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -38,21 +41,29 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllQuestions(pageable));
     }
 
-    @GetMapping("/{questionId}")
+    @GetMapping("questions/{questionId}")
     public ResponseEntity<DetailedQuestionResponse> getQuestionById(@PathVariable Long questionId) {
         return ResponseEntity.ok(questionService.getQuestionById(questionId));
     }
 
-    @PutMapping("/{questionId}")
+    @PutMapping("questions/{questionId}")
     public ResponseEntity<DetailedQuestionResponse> updateQuestion(
             @PathVariable Long questionId,
             @Valid @RequestBody QuestionRequest request) {
         return ResponseEntity.ok(questionService.updateQuestion(questionId, request));
     }
 
-    @DeleteMapping("/{questionId}")
+    @DeleteMapping("questions/{questionId}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
         questionService.deleteQuestion(questionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/questionGroups/{groupId}/questions/reorder")
+    public ResponseEntity<Void> reorderQuestions(
+            @PathVariable Long groupId,
+            @RequestBody List<Long> orderedIds) {
+        questionService.reorderQuestions(groupId, orderedIds);
         return ResponseEntity.noContent().build();
     }
 }

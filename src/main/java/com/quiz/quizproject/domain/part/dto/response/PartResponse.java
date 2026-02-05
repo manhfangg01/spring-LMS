@@ -9,5 +9,6 @@ public record PartResponse(
                 ExamType examType,
                 String passage,
                 String audioUrl,
-                String description) {
+                String description,
+                Long examId) {// Exam chỉ không null khi nó được gọi bởi PartService
 }

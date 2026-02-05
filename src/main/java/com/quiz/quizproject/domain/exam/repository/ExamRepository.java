@@ -1,4 +1,4 @@
-package com.quiz.quizproject.domain.exam.repo;
+package com.quiz.quizproject.domain.exam.repository;
 
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExamRepository extends JpaRepository<ExamEntity, Long>, JpaSpecificationExecutor<ExamEntity> {
     boolean existsByTitle(String title);
+
     boolean existsByCodeAndIdNot(String title, Long id);
 }

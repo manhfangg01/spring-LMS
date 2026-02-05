@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record QuestionGroupRequest(
         String imageUrl,
         String instructions,
-        QuestionType type,
-        @NotNull(message = "Part ID is required") Long partId) {
+        @NotNull(message = "questionGroup type cannot be null")
+        QuestionType type
+   ) {
 }

@@ -1,7 +1,9 @@
 package com.quiz.quizproject.domain.questionGroup.service.impl;
 
 import com.quiz.quizproject.domain.part.PartEntity;
-import com.quiz.quizproject.domain.part.repo.PartRepository;
+import com.quiz.quizproject.domain.part.repository.PartRepository;
+import com.quiz.quizproject.domain.questionGroup.dto.request.MoveGroupRequest;
+import com.quiz.quizproject.domain.questionGroup.dto.response.DetailedQuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class QuestionGroupServiceImpl implements QuestionGroupService {
 
     private final QuestionGroupRepository questionGroupRepo;
@@ -32,19 +35,18 @@ public class QuestionGroupServiceImpl implements QuestionGroupService {
     }
 
     @Override
-    public QuestionGroupResponse getQuestionGroupById(Long id) {
+    public DetailedQuestionGroupResponse getQuestionGroupById(Long id) {
         QuestionGroupEntity questionGroup = questionGroupRepo.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
                         "Question group not found"));
-        return questionGroupMapper.toResponse(questionGroup);
+        return questionGroupMapper.toDetailedResponse(questionGroup);
     }
 
     @Override
-    @Transactional
-    public QuestionGroupResponse createQuestionGroup(QuestionGroupRequest request) {
+    public QuestionGroupResponse createQuestionGroup(QuestionGroupRequest request, Long partId) {
         QuestionGroupEntity questionGroup = questionGroupMapper.toEntity(request);
-        if (request.partId() != null) {
-            PartEntity part = partRepo.findById(request.partId())
+        if (partId != null) {
+            PartEntity part = partRepo.findById(partId)
                     .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
                             "Part not found"));
             questionGroup.setPart(part);
@@ -53,27 +55,16 @@ public class QuestionGroupServiceImpl implements QuestionGroupService {
     }
 
     @Override
-    @Transactional
     public QuestionGroupResponse updateQuestionGroup(Long id, QuestionGroupRequest request) {
         QuestionGroupEntity questionGroup = questionGroupRepo.findById(id)
                 .orElseThrow(() -> new AppException(
                         "ApiException", HttpStatus.NOT_FOUND, "Not Found", "Question group not found"));
-
-        Long currentPartId = questionGroup.getPart() != null ? questionGroup.getPart().getId() : null;
-
-        if (request.partId() != null && !request.partId().equals(currentPartId)) {
-            PartEntity newPart = partRepo.findById(request.partId())
-                    .orElseThrow(() -> new AppException(
-                            "ApiException", HttpStatus.NOT_FOUND, "Not Found", "Part not found with id: " + request.partId()));
-
-            questionGroup.setPart(newPart);
-        }
-
         questionGroupMapper.updateEntityFromRequest(request, questionGroup);
 
         QuestionGroupEntity savedGroup = questionGroupRepo.save(questionGroup);
         return questionGroupMapper.toResponse(savedGroup);
     }
+
     @Override
     public void deleteQuestionGroup(Long id) {
         if (!questionGroupRepo.existsById(id)) {
@@ -81,4 +72,27 @@ public class QuestionGroupServiceImpl implements QuestionGroupService {
         }
         questionGroupRepo.deleteById(id);
     }
+
+    @Override
+    public void moveGroups(Long groupId, MoveGroupRequest request) {
+        QuestionGroupEntity groupToMove = questionGroupRepo.findById(groupId)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Question group not found"));
+
+        Long oldPartId = groupToMove.getPart().getId();
+        Long newPartId = request.targetPartId();
+        int newPos = request.position();
+
+        if (!oldPartId.equals(newPartId)) {
+            questionGroupRepo.decrementOrderIndex(oldPartId, groupToMove.getOrderIndex());
+            PartEntity targetPart = new PartEntity();
+            targetPart.setId(newPartId);
+            groupToMove.setPart(targetPart);
+        }
+
+        questionGroupRepo.incrementOrderIndex(newPartId, newPos);
+        groupToMove.setOrderIndex(newPos);
+
+    }
+
 }

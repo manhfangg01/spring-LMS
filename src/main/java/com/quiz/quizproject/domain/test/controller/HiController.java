@@ -1,6 +1,6 @@
 package com.quiz.quizproject.domain.test.controller;
 
-import com.quiz.quizproject.domain.part.repo.PartRepository;
+import com.quiz.quizproject.domain.part.repository.PartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +13,7 @@ public class HiController {
     private final PartRepository partRepository;
 
     @GetMapping("/hi")
-    public Object sayHi() {
-        return partRepository.findById(1L).get().getExam().getId();
+    public void sayHi() {
+
     }
 }

@@ -9,8 +9,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PartMapper {
 
+    @Mapping(target = "examId", source = "exam.id")
     PartResponse toResponse(PartEntity entity);
 
+    @Mapping(target = "examId", source = "exam.id")
     DetailedPartResponse toDetailedResponse(PartEntity entity);
 
     @Mapping(target = "id", ignore = true)

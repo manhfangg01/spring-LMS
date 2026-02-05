@@ -1,7 +1,7 @@
 package com.quiz.quizproject.service.auth.impl;
 
 import com.quiz.quizproject.domain.user.UserEntity;
-import com.quiz.quizproject.domain.user.repo.UserRepository;
+import com.quiz.quizproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +21,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return   User
+        return User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities(new SimpleGrantedAuthority(user.getRole().getName()))

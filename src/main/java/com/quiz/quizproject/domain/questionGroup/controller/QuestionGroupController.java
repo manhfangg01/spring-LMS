@@ -1,6 +1,8 @@
 package com.quiz.quizproject.domain.questionGroup.controller;
 
+import com.quiz.quizproject.domain.questionGroup.dto.request.MoveGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
+import com.quiz.quizproject.domain.questionGroup.dto.response.DetailedQuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.filter.QuestionGroupFilter;
 import com.quiz.quizproject.domain.questionGroup.service.QuestionGroupService;
@@ -20,13 +22,14 @@ import org.springframework.web.bind.annotation.*;
 public class QuestionGroupController {
     private final QuestionGroupService questionGroupService;
 
-    @PostMapping("/parts/{partId}/groups")
-    public ResponseEntity<QuestionGroupResponse> createQuestionGroup(@Valid @RequestBody QuestionGroupRequest request) {
+    @PostMapping("/parts/{partId}/questionGroups")
+    public ResponseEntity<QuestionGroupResponse> createQuestionGroup(@Valid @RequestBody QuestionGroupRequest request,
+            @PathVariable Long partId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(questionGroupService.createQuestionGroup(request));
+                .body(questionGroupService.createQuestionGroup(request, partId));
     }
 
-    @GetMapping("groups")
+    @GetMapping("questionGroups")
     public ResponseEntity<Page<QuestionGroupResponse>> getAllQuestionGroups(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -39,21 +42,29 @@ public class QuestionGroupController {
         return ResponseEntity.ok(questionGroupService.getAllQuestionGroups(pageable, filterCriteria));
     }
 
-    @GetMapping("groups/{groupId}")
-    public ResponseEntity<QuestionGroupResponse> getQuestionGroupById(@PathVariable Long groupId) {
+    @GetMapping("questionGroups/{groupId}")
+    public ResponseEntity<DetailedQuestionGroupResponse> getQuestionGroupById(@PathVariable Long groupId) {
         return ResponseEntity.ok(questionGroupService.getQuestionGroupById(groupId));
     }
 
-    @PutMapping("groups/{groupId}")
+    @PatchMapping("questionGroups/{groupId}")
     public ResponseEntity<QuestionGroupResponse> updateQuestionGroup(
             @PathVariable Long groupId,
             @Valid @RequestBody QuestionGroupRequest request) {
         return ResponseEntity.ok(questionGroupService.updateQuestionGroup(groupId, request));
     }
 
-    @DeleteMapping("groups/{groupId}")
+    @DeleteMapping("questionGroups/{groupId}")
     public ResponseEntity<Void> deleteQuestionGroup(@PathVariable Long groupId) {
         questionGroupService.deleteQuestionGroup(groupId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/questionGroups/{groupId}/move")
+    public ResponseEntity<Void> moveGroups(
+            @PathVariable Long groupId,
+            @Valid @RequestBody MoveGroupRequest request) {
+        questionGroupService.moveGroups(groupId, request);
         return ResponseEntity.noContent().build();
     }
 }

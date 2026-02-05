@@ -6,10 +6,10 @@ import com.quiz.quizproject.domain.exam.dto.response.DetailedExamResponse;
 import com.quiz.quizproject.domain.exam.dto.response.ExamResponse;
 import com.quiz.quizproject.domain.exam.filter.ExamFilter;
 import com.quiz.quizproject.domain.exam.mapper.ExamMapper;
-import com.quiz.quizproject.domain.exam.repo.ExamRepository;
+import com.quiz.quizproject.domain.exam.repository.ExamRepository;
 import com.quiz.quizproject.domain.exam.service.ExamService;
 import com.quiz.quizproject.domain.part.PartEntity;
-import com.quiz.quizproject.domain.part.repo.PartRepository;
+import com.quiz.quizproject.domain.part.repository.PartRepository;
 import com.quiz.quizproject.util.constant.ExamStatus;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import jakarta.transaction.Transactional;
@@ -70,10 +70,15 @@ public class ExamServiceImpl implements ExamService {
         ExamEntity exam = examRepository.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found",
                         "Exam not found"));
-        exam.setExamStatus(ExamStatus.PUBLISHED);
+
+        ExamStatus newStatus = (exam.getExamStatus() == ExamStatus.DRAFT)
+                ? ExamStatus.PUBLISHED
+                : ExamStatus.DRAFT;
+
+        exam.setExamStatus(newStatus);
+
         return examMapper.toResponse(examRepository.save(exam));
     }
-
 
     @Override
     public void deleteExamKeepsParts(Long id) {

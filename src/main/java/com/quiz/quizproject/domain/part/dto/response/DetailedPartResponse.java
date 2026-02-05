@@ -13,5 +13,6 @@ public record DetailedPartResponse(
                 String passage,
                 String audioUrl,
                 String description,
-                List<DetailedQuestionGroupResponse> questionGroups) {
+                List<DetailedQuestionGroupResponse> questionGroups,
+                Long examId) {// Exam chỉ không null khi nó được gọi bởi PartService
 }

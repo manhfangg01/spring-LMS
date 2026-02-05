@@ -27,15 +27,11 @@ public interface QuestionMapper {
         }
     }
 
-    DetailedQuestionResponse toResponse(QuestionEntity entity);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "question", ignore = true)
     QuestionOptionEntity toOptionEntity(QuestionOptionRequest request);
-
-    QuestionOptionResponse toOptionResponse(QuestionOptionEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
@@ -45,4 +41,9 @@ public interface QuestionMapper {
     @Mapping(target = "userAnswers", ignore = true)
     @Mapping(target = "questionOptions", ignore = true)
     void updateEntityFromRequest(QuestionRequest request, @MappingTarget QuestionEntity entity);
+
+    @Mapping(target = "groupId", source = "questionGroup.id")
+    DetailedQuestionResponse toResponse(QuestionEntity entity);
+
+    QuestionOptionResponse toOptionResponse(QuestionOptionEntity entity);
 }

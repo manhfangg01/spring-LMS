@@ -6,7 +6,7 @@ import com.quiz.quizproject.domain.user.dto.request.UserRequest;
 import com.quiz.quizproject.domain.user.dto.response.UserResponse;
 import com.quiz.quizproject.domain.user.filter.UserFilter;
 import com.quiz.quizproject.domain.user.mapper.UserMapper;
-import com.quiz.quizproject.domain.user.repo.UserRepository;
+import com.quiz.quizproject.domain.user.repository.UserRepository;
 import com.quiz.quizproject.domain.user.service.UserService;
 import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.util.exception.handler.AppException;
@@ -28,22 +28,22 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserResponse createUser(UserRequest req) {
-        if (userRepo.existsByEmail(req.email())) {
+    public UserResponse createUser(UserRequest request) {
+        if (userRepo.existsByEmail(request.email())) {
             throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error", "Email already exists"); // Should
                                                                                                                    // use
                                                                                                                    // Custom
                                                                                                                    // Exception
         }
 
-        UserEntity user = userMapper.toEntity(req);
+        UserEntity user = userMapper.toEntity(request);
         String finalUserName;
         do {
             finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
         } while (userRepo.existsByUserName(finalUserName));
         user.setUserName(finalUserName);
-        user.setPassword(passwordEncoder.encode(req.password()));
-        RoleEntity role = roleRepo.findByName(req.roleName())
+        user.setPassword(passwordEncoder.encode(request.password()));
+        RoleEntity role = roleRepo.findByName(request.roleName())
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
                         "Role not found"));
         user.setRole(role);
@@ -66,25 +66,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UserRequest req) {
+    public UserResponse updateUser(Long id, UserRequest request) {
         UserEntity user = userRepo.findById(id)
                 .orElseThrow(
                         () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found", "User not found"));
-        if (userRepo.existsByEmailAndIdNot(req.email(), id)) {
+        if (userRepo.existsByEmailAndIdNot(request.email(), id)) {
             throw new AppException("ApiException", HttpStatus.BAD_REQUEST,
                     "Input error", "Email is already used by another user");
         }
-        RoleEntity role = roleRepo.findByName(req.roleName())
+        RoleEntity role = roleRepo.findByName(request.roleName())
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
                         "Role not found"));
         user.setRole(role);
-        user.setPassword(passwordEncoder.encode(req.password()));
-        String finalUserName = req.userName();
+        user.setPassword(passwordEncoder.encode(request.password()));
+        String finalUserName = request.userName();
         while (userRepo.existsByUserNameAndIdNot(finalUserName, id)) {
             finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
         }
         user.setUserName(finalUserName);
-        userMapper.updateEntityFromRequest(req, user);
+        userMapper.updateEntityFromRequest(request, user);
         return userMapper.toResponse(userRepo.save(user));
     }
 

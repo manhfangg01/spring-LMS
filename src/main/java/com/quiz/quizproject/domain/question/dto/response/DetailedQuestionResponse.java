@@ -7,6 +7,7 @@ public record DetailedQuestionResponse(
         String correctText,
         String explanation,
         Integer orderIndex,
-        List<QuestionOptionResponse> questionOptions
+        List<QuestionOptionResponse> questionOptions,
+        Long groupId
 ) {
 }

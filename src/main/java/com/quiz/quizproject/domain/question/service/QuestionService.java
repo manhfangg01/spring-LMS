@@ -6,9 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface QuestionService {
-    DetailedQuestionResponse createQuestion(QuestionRequest request);
+    DetailedQuestionResponse createQuestion(Long groupId,QuestionRequest request);
 
     DetailedQuestionResponse getQuestionById(Long id);
 
@@ -17,4 +19,6 @@ public interface QuestionService {
     DetailedQuestionResponse updateQuestion(Long id, QuestionRequest request);
 
     void deleteQuestion(Long id);
+
+    void reorderQuestions(Long groupId, List<Long> orderedIds);
 }

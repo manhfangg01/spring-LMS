@@ -1,15 +1,15 @@
 package com.quiz.quizproject.domain.part.service.impl;
 
+import com.quiz.quizproject.domain.exam.repository.ExamRepository;
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.part.dto.request.PartRequest;
 import com.quiz.quizproject.domain.part.dto.response.DetailedPartResponse;
 import com.quiz.quizproject.domain.part.dto.response.PartResponse;
 import com.quiz.quizproject.domain.part.filter.PartFilter;
 import com.quiz.quizproject.domain.part.mapper.PartMapper;
-import com.quiz.quizproject.domain.part.repo.PartRepository;
+import com.quiz.quizproject.domain.part.repository.PartRepository;
 import com.quiz.quizproject.domain.part.service.PartService;
 import com.quiz.quizproject.domain.exam.ExamEntity;
-import com.quiz.quizproject.domain.exam.repo.ExamRepository;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,8 +32,8 @@ public class PartServiceImpl implements PartService {
     private final ExamRepository examRepo;
 
     @Override
-    public PartResponse createPart(PartRequest req, Long examId) {
-        PartEntity part = partMapper.toEntity(req);
+    public PartResponse createPart(PartRequest request, Long examId) {
+        PartEntity part = partMapper.toEntity(request);
         if (examId != null) {
             ExamEntity exam = examRepo.findById(examId)
                     .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
@@ -58,11 +58,11 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartResponse updatePart(Long id, PartRequest req) {
+    public PartResponse updatePart(Long id, PartRequest request) {
         PartEntity part = partRepo.findById(id)
                 .orElseThrow(
                         () -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found", "Part not found"));
-        partMapper.updateEntityFromRequest(req, part);
+        partMapper.updateEntityFromRequest(request, part);
         return partMapper.toResponse(partRepo.save(part));
     }
 
@@ -85,10 +85,9 @@ public class PartServiceImpl implements PartService {
             PartEntity part = partMap.get(id);
 
             if (part != null) {
-                part.setOrderIndex(i);
+                part.setOrderIndex(i + 1);
             }
         }
     }
-
 
 }

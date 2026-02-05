@@ -45,14 +45,14 @@ public class ExamController {
         return ResponseEntity.ok(examService.getExamById(examId));
     }
 
-    @PutMapping("/{examId}")
+    @PatchMapping("/{examId}")
     public ResponseEntity<ExamResponse> updateExam(
             @PathVariable Long examId,
             @Valid @RequestBody ExamRequest request) {
         return ResponseEntity.ok(examService.updateExam(examId, request));
     }
 
-    @PatchMapping("/{examId}")
+    @PatchMapping("{examId}/status")
     public ResponseEntity<ExamResponse> changeStatus(@PathVariable Long examId) {
         return ResponseEntity.ok(examService.changeStatus(examId));
     }

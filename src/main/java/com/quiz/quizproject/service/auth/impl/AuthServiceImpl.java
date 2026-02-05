@@ -8,7 +8,7 @@ import com.quiz.quizproject.domain.auth.dto.request.SignUpRequest;
 import com.quiz.quizproject.domain.auth.dto.response.AuthResponse;
 import com.quiz.quizproject.repository.RefreshTokenRepository;
 import com.quiz.quizproject.repository.RoleRepository;
-import com.quiz.quizproject.domain.user.repo.UserRepository;
+import com.quiz.quizproject.domain.user.repository.UserRepository;
 import com.quiz.quizproject.service.auth.AuthService;
 import com.quiz.quizproject.service.auth.JwtService;
 import com.quiz.quizproject.util.constant.UserStatus;

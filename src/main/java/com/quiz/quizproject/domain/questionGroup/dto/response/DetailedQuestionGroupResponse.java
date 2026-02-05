@@ -10,6 +10,7 @@ public record DetailedQuestionGroupResponse(
         String imageUrl,
         String instructions,
         QuestionType type,
-        List<DetailedQuestionResponse> questions
+        List<DetailedQuestionResponse> questions,
+        Long partId
 ) {
 }

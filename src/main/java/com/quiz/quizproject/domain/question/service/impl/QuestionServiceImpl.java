@@ -6,6 +6,7 @@ import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.question.mapper.QuestionMapper;
 import com.quiz.quizproject.domain.question.repository.QuestionRepository;
 import com.quiz.quizproject.domain.question.service.QuestionService;
+import com.quiz.quizproject.domain.questionGroup.repository.QuestionGroupRepository;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,17 +15,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
+    private final QuestionGroupRepository questionGroupRepository;
 
     @Override
-    @Transactional
-    public DetailedQuestionResponse createQuestion(QuestionRequest request) {
+    public DetailedQuestionResponse createQuestion(Long groupId,QuestionRequest request) {
         QuestionEntity question = questionMapper.toEntity(request);
+        if (groupId != null) {
+            var questionGroup = questionGroupRepository.findById(groupId)
+                    .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                            "Question Group not found"));
+            question.setQuestionGroup(questionGroup);
+        }
         return questionMapper.toResponse(questionRepository.save(question));
     }
 
@@ -32,8 +42,8 @@ public class QuestionServiceImpl implements QuestionService {
     public DetailedQuestionResponse getQuestionById(Long id) {
         return questionRepository.findById(id)
                 .map(questionMapper::toResponse)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
-                        "Câu hỏi không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Question not found"));
     }
 
     @Override
@@ -43,11 +53,10 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional
     public DetailedQuestionResponse updateQuestion(Long id, QuestionRequest request) {
         QuestionEntity question = questionRepository.findById(id)
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy",
-                        "Câu hỏi không tồn tại"));
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Question not found"));
 
         questionMapper.updateEntityFromRequest(request, question);
 
@@ -63,11 +72,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Transactional
     public void deleteQuestion(Long id) {
         if (!questionRepository.existsById(id)) {
-            throw new AppException("ApiException", HttpStatus.NOT_FOUND, "Không tìm thấy", "Câu hỏi không tồn tại");
+            throw new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found", "Question not found");
         }
         questionRepository.deleteById(id);
+    }
+
+    @Override
+    public void reorderQuestions(Long groupId, List<Long> orderedIds) {
+
     }
 }
