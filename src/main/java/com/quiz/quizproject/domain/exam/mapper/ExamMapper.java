@@ -21,7 +21,6 @@ public interface ExamMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "testAttempts", ignore = true)
-    @Mapping(target = "totalQuestions", ignore = true)
-    @Mapping(target = "code", ignore = true)// Xử lý trùng
+    @Mapping(target = "examStatus", ignore = true)
     void updateEntityFromRequest(ExamRequest request, @MappingTarget ExamEntity entity);
 }

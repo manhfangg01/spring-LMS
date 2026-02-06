@@ -1,6 +1,5 @@
 package com.quiz.quizproject.domain.questionGroup.controller;
 
-import com.quiz.quizproject.domain.questionGroup.dto.request.MoveGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.response.DetailedQuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
@@ -16,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api")
 @RequiredArgsConstructor
@@ -23,8 +24,7 @@ public class QuestionGroupController {
     private final QuestionGroupService questionGroupService;
 
     @PostMapping("/parts/{partId}/questionGroups")
-    public ResponseEntity<QuestionGroupResponse> createQuestionGroup(@Valid @RequestBody QuestionGroupRequest request,
-            @PathVariable Long partId) {
+    public ResponseEntity<QuestionGroupResponse> createQuestionGroup(@Valid @RequestBody QuestionGroupRequest request,@PathVariable Long partId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(questionGroupService.createQuestionGroup(request, partId));
     }
@@ -60,11 +60,19 @@ public class QuestionGroupController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/questionGroups/{groupId}/move")
-    public ResponseEntity<Void> moveGroups(
+    @PatchMapping("/parts/{groupId}/questionGroups/reorder")
+    public ResponseEntity<Void> reorderParts(
             @PathVariable Long groupId,
-            @Valid @RequestBody MoveGroupRequest request) {
-        questionGroupService.moveGroups(groupId, request);
+            @RequestBody List<Long> orderedIds) {
+        questionGroupService.reorderQuestionGroups(groupId, orderedIds);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/questionGroups/{groupId}/move/{targetPartId}")
+    public ResponseEntity<Void> moveGroups(
+            @PathVariable("groupId") Long groupId,
+            @PathVariable("targetPartId") Long targetPartId) {
+        questionGroupService.moveGroups(groupId, targetPartId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -8,11 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ExamService {
+    ExamResponse createExam(ExamRequest request);
+
     Page<ExamResponse> getExams(ExamFilter filter, Pageable pageable);
 
     DetailedExamResponse getExamById(Long id);
-
-    ExamResponse createExam(ExamRequest request);
 
     ExamResponse updateExam(Long id, ExamRequest request);
 

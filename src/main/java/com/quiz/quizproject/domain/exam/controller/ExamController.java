@@ -29,10 +29,10 @@ public class ExamController {
 
     @GetMapping
     public ResponseEntity<Page<ExamResponse>> getAllExams(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam(defaultValue = "1", required = false) int page,
+            @RequestParam(defaultValue = "5", required = false) int size,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(defaultValue = "asc", required = false) String order,
             @ModelAttribute ExamFilter filterCriteria) {
         int pageIndex = page > 0 ? page - 1 : 0;
         Sort sort = Sort.by(order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);

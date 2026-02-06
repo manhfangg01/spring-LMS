@@ -1,6 +1,5 @@
 package com.quiz.quizproject.domain.questionGroup.service;
 
-import com.quiz.quizproject.domain.questionGroup.dto.request.MoveGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.request.QuestionGroupRequest;
 import com.quiz.quizproject.domain.questionGroup.dto.response.DetailedQuestionGroupResponse;
 import com.quiz.quizproject.domain.questionGroup.dto.response.QuestionGroupResponse;
@@ -8,6 +7,8 @@ import com.quiz.quizproject.domain.questionGroup.filter.QuestionGroupFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface QuestionGroupService {
@@ -21,5 +22,7 @@ public interface QuestionGroupService {
 
     void deleteQuestionGroup(Long id);
 
-    void moveGroups(Long groupId, MoveGroupRequest request);
+    void reorderQuestionGroups(Long partId, List<Long> orderIds);
+
+    void moveGroups(Long groupId, Long targetPartId);
 }

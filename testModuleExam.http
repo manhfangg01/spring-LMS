@@ -12,12 +12,11 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "IELTS Reading Practice Test 1",
+  "title": "IELTS Reading Practice Test 11",
   "examType": "READING",
   "durationInSeconds": 3600,
-  "description": "A comprehensive reading test.",
-  "code": "IELTS-R-001",
-  "examStatus": "DRAFT"
+  "description": "Another test.",
+  "code": "IELTS-R-0011"
 }
 
 > {%
@@ -25,15 +24,18 @@ Authorization: Bearer {{accessToken}}
     client.log("Created Exam ID: " + response.body.id);
 %}
 
+
 ### 2. Get All Exams
 GET {{host}}/exams?page=1&size=10
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
+
 ### 3. Get Exam by ID
 GET {{host}}/exams/{{examId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
 
 ### 4. Update Exam
 PATCH {{host}}/exams/{{examId}}
@@ -41,234 +43,291 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "IELTS Reading Practice Test 1 - Updated",
+  "title": "IELTS Reading Practice Test 11 - Updated",
   "examType": "READING",
   "durationInSeconds": 4000,
   "description": "Updated description.",
-  "code": "IELTS-R-001-V2",
-  "examStatus": "PUBLISHED"
+  "code": "IELTS-R-0011-V2"
 }
+
 
 ### 5. Change Exam Status
 PATCH {{host}}/exams/{{examId}}/status
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
+
 ### ====================================================================================================================
 ### PART MODULE
 ### ====================================================================================================================
 
-### 6. Create Part
-# @name createPart
-POST {{host}}/exams/5/parts
+### 6. Create Part 1
+# @name createPart1
+POST {{host}}/exams/{{examId}}/parts
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "title": "Part 1: Social Interaction",
-  "orderIndex": 1,
-  "examType": "READING",
   "passage": "Lorem ipsum dolor sit amet...",
   "audioUrl": "http://example.com/audio.mp3",
   "description": "Part 1 description"
 }
 
 > {%
-    client.global.set("partId", response.body.id);
-    client.log("Created Part ID: " + response.body.id);
+    client.global.set("partId1", response.body.id);
+    client.log("Created Part 1 ID: " + response.body.id);
 %}
 
-### 7. Get All Parts
-GET {{host}}/parts?page=1&size=10
+
+### 7. Create Part 2
+# @name createPart2
+POST {{host}}/exams/{{examId}}/parts
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 8. Get Part by ID
-GET {{host}}/parts/{{partId}}
+{
+  "title": "Part 2: Academic Reading",
+  "passage": "Second passage...",
+  "audioUrl": "http://example.com/audio2.mp3",
+  "description": "Part 2 description"
+}
+
+> {%
+    client.global.set("partId2", response.body.id);
+    client.log("Created Part 2 ID: " + response.body.id);
+%}
+
+### 8. Create Part 3
+# @name createPart3
+POST {{host}}/exams/{{examId}}/parts
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 9. Update Part
-PATCH {{host}}/parts/{{partId}}
+{
+  "title": "Part 3: happey Reading",
+  "passage": "Third passage...",
+  "audioUrl": "http://example.com/audio3.mp3",
+  "description": "Part 3 description"
+}
+
+> {%
+    client.global.set("partId3", response.body.id);
+    client.log("Created Part 3 ID: " + response.body.id);
+%}
+
+
+### 8. Get All Parts
+GET {{host}}/parts?page=2&size=10
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 9. Get Part 1 by ID
+GET {{host}}/parts/{{partId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 10. Update Part 1
+PATCH {{host}}/parts/{{partId1}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "title": "Part 1: Social Interaction (Revised)",
-  "orderIndex": 1,
-  "examType": "READING",
   "passage": "Updated passage text...",
   "audioUrl": "http://example.com/audio_updated.mp3",
   "description": "Updated description"
 }
 
-### 10. Reorder Parts
-# Create another part first to test reordering
-# @name createPart2
-POST {{host}}/exams/5/parts
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
-{
-  "title": "Part 2",
-  "orderIndex": 2,
-  "examType": "READING",
-  "passage": "Part 2 passage...",
-  "audioUrl": "",
-  "description": "Part 2"
-}
-
-> {%
-    client.global.set("partId2", response.body.id);
-%}
-
-### Reorder Request
+### 11. Reorder Parts (Swap 1 and 2)
+# Reordering parts within the exam
 PATCH {{host}}/exams/{{examId}}/parts/reorder
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 [
+  {{partId3}},
   {{partId2}},
-  {{partId}}
+  {{partId1}}
 ]
+
+> {%
+    client.log("PartId3: " + client.global.get("partId3"));
+    client.log("PartId2: " + client.global.get("partId2"));
+    client.log("PartId1: " + client.global.get("partId1"));
+%}
+
+
+### 12. CHECK RELATIONSHIP [Part -> Exam]: Get Exam (Should see parts in new order)
+# Verifies that parts are correctly associated with the exam and reordering worked
+GET {{host}}/exams/{{examId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
 
 ### ====================================================================================================================
 ### QUESTION GROUP MODULE
 ### ====================================================================================================================
 
-### 11. Create Question Group
-# @name createGroup
-POST {{host}}/parts/{{partId}}/questionGroups
+### 13. Create Question Group 1 (in Part 1)
+# @name createGroup1
+POST {{host}}/parts/{{partId3}}/questionGroups
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "imageUrl": "http://example.com/image.png",
-  "instructions": "Choose the best answer.",
+  "instructions": "Choose the best answer. TEST PART 33",
   "type": "MULTIPLE_CHOICE"
 }
 
 > {%
-    client.global.set("groupId", response.body.id);
-    client.log("Created Group ID: " + response.body.id);
+    client.global.set("groupId1", response.body.id);
+    client.log("Created Group 1 ID: " + response.body.id);
 %}
 
-### 12. Get All Question Groups
+
+### 14. Create Question Group 2 (in Part 1)
+# @name createGroup2
+POST {{host}}/parts/{{partId3}}/questionGroups
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "imageUrl": "http://example.com/image2.png",
+  "instructions": "Fill in the blanks. TEST PART 2",
+  "type": "FILL_IN_THE_BLANK"
+}
+
+> {%
+    client.global.set("groupId2", response.body.id);
+    client.log("Created Group 2 ID: " + response.body.id);
+%}
+
+### 14. Create Question Group 3 (in Part 1)
+# @name createGroup3
+POST {{host}}/parts/{{partId2}}/questionGroups
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "imageUrl": "http://example.com/image3.png",
+  "instructions": "Fill in the blanks.",
+  "type": "FILL_IN_THE_BLANK"
+}
+
+> {%
+    client.global.set("groupId3", response.body.id);
+    client.log("Created Group 3 ID: " + response.body.id);
+%}
+
+
+### 15. Get All Question Groups
 GET {{host}}/questionGroups?page=1&size=10
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 13. Get Question Group by ID
-GET {{host}}/questionGroups/{{groupId}}
+
+### 16. Get Group 1 by ID
+GET {{host}}/questionGroups/{{groupId1}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 14. Update Question Group
-PATCH {{host}}/questionGroups/{{groupId}}
+
+### 17. Update Group 1
+PATCH {{host}}/questionGroups/{{groupId1}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "imageUrl": "http://example.com/image_v2.png",
-  "instructions": "Read carefully and answer.",
+  "instructions": "Read carefully and answer update.",
   "type": "MULTIPLE_CHOICE"
 }
+
+
+### 18. Reorder Question Groups (Swap 1 and 2 in Part 1)
+# Note: The path `/parts/{partId}/questionGroups/reorder` is used to reorder groups within a part
+PATCH {{host}}/parts/{{partId1}}/questionGroups/reorder
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+[
+  {{groupId3}},
+  {{groupId2}},
+  {{groupId1}}
+]
+
+
+### 19. CHECK RELATIONSHIP [QuestionGroup -> Part]: Get Part 1 (Should see groups in new order)
+# Verifies that groups are correctly linked to Part 1 and reordering worked
+GET {{host}}/parts/{{partId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 20. Move Group 2 to Part 2
+# Current: Group 2 is in Part 1. Move to Part 2.
+PATCH {{host}}/questionGroups/{{groupId2}}/move/{{partId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 21. CHECK RELATIONSHIP [QuestionGroup -> Part]: Get Part 2 (Should contain Group 2)
+# Verifies Group 2 has moved to Part 2
+GET {{host}}/parts/{{partId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 22. CHECK RELATIONSHIP [QuestionGroup -> Part]: Get Part 1 (Should NOT contain Group 2)
+# Verifies Group 2 is no longer in Part 1
+GET {{host}}/parts/{{partId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
 
 ### ====================================================================================================================
 ### QUESTION & OPTIONS MODULE
 ### ====================================================================================================================
 
-### 15. Create Question
-# @name createQuestion
-POST {{host}}/questionGroups/{{groupId}}/questions
+### 23. Create Question 1 (in Group 1)
+# @name createQuestion1
+POST {{host}}/questionGroups/{{groupId1}}/questions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "content": "What is the capital of France?",
+  "content": "What is the capital of France? TEST 33",
   "questionType": "MULTIPLE_CHOICE",
   "explanation": "Paris is the capital.",
-  "orderIndex": 1,
-  "questionGroupId": {{groupId}},
   "questionOptions": [
-    {
-      "content": "London",
-      "isCorrect": false
-    },
-    {
-      "content": "Paris",
-      "isCorrect": true
-    },
-    {
-      "content": "Berlin",
-      "isCorrect": false
-    },
-    {
-      "content": "Madrid",
-      "isCorrect": false
-    }
+    { "content": "London", "isCorrect": false },
+    { "content": "Paris", "isCorrect": true },
+    { "content": "Berlin", "isCorrect": false },
+    { "content": "Madrid", "isCorrect": false }
   ]
 }
 
 > {%
-    client.global.set("questionId", response.body.id);
-    client.log("Created Question ID: " + response.body.id);
+    client.global.set("questionId1", response.body.id);
+    client.log("Created Question 1 ID: " + response.body.id);
 %}
 
-### 16. Get All Questions
-GET {{host}}/questions
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
-### 17. Get Question by ID (Detailed)
-GET {{host}}/questions/{{questionId}}
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-### 18. Update Question
-PUT {{host}}/questions/{{questionId}}
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{
-  "content": "What is the capital of France? (Updated)",
-  "questionType": "MULTIPLE_CHOICE",
-  "explanation": "Updated explanation.",
-  "orderIndex": 1,
-  "questionGroupId": {{groupId}},
-  "questionOptions": [
-    {
-      "content": "London",
-      "isCorrect": false
-    },
-    {
-      "content": "Paris",
-      "isCorrect": true
-    },
-    {
-      "content": "Berlin",
-      "isCorrect": false
-    },
-    {
-      "content": "Rome",
-      "isCorrect": false
-    }
-  ]
-}
-
-### 19. Reorder Questions
-# Create another question to test reordering
+### 24. Create Question 2 (in Group 1)
 # @name createQuestion2
-POST {{host}}/questionGroups/{{groupId}}/questions
+POST {{host}}/questionGroups/{{groupId1}}/questions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "content": "Question 2",
+  "content": "Is the sky blue?",
   "questionType": "TRUE_FALSE_NOTGIVEN",
-  "explanation": "...",
-  "orderIndex": 2,
-  "questionGroupId": {{groupId}},
+  "explanation": "Yes usually.",
   "questionOptions": [
     { "content": "True", "isCorrect": true },
     { "content": "False", "isCorrect": false }
@@ -277,48 +336,118 @@ Authorization: Bearer {{accessToken}}
 
 > {%
     client.global.set("questionId2", response.body.id);
+    client.log("Created Question 2 ID: " + response.body.id);
 %}
 
-### Reorder Request
-PATCH {{host}}/questionGroups/{{groupId}}/questions/reorder
+
+### 25. Get All Questions
+GET {{host}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 26. Get Question 1 by ID
+GET {{host}}/questions/{{questionId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 27. Update Question 1
+PUT {{host}}/questions/{{questionId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "What is the capital of France? (Updated)",
+  "questionType": "MULTIPLE_CHOICE",
+  "explanation": "Updated explanation.",
+  "questionOptions": [
+    { "content": "London", "isCorrect": false },
+    { "content": "Paris", "isCorrect": true },
+    { "content": "Berlin", "isCorrect": false },
+    { "content": "Rome", "isCorrect": false }
+  ]
+}
+
+
+### 28. Reorder Questions (Swap 1 and 2 in Group 1)
+# Note: The path uses questionGroupId as the identifier for the group
+PATCH {{host}}/questionGroups/{{groupId1}}/questions/reorder
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 [
   {{questionId2}},
-  {{questionId}}
+  {{questionId1}}
 ]
+
+
+### 29. CHECK RELATIONSHIP [Question -> QuestionGroup]: Get Group 1 (Should see questions in new order)
+# Verifies questions are listed in Group 1
+GET {{host}}/questionGroups/{{groupId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 30. Move Question 2 to Group 2 (which is in Part 2)
+# Current: Question 2 is in Group 1 (Part 1). Move to Group 2 (Part 2).
+PATCH {{host}}/questions/{{questionId2}}/move/{{groupId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 31. CHECK RELATIONSHIP [Question -> QuestionGroup]: Get Group 2 (Should contain Question 2)
+# Verifies Question 2 is now in Group 2
+GET {{host}}/questionGroups/{{groupId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 32. CHECK RELATIONSHIP [Question -> QuestionGroup]: Get Group 1 (Should NOT contain Question 2)
+# Verifies Question 2 is gone from Group 1
+GET {{host}}/questionGroups/{{groupId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
 
 ### ====================================================================================================================
 ### CLEANUP (DELETES)
 ### ====================================================================================================================
 
-### 20. Delete Question
-DELETE {{host}}/questions/{{questionId}}
+### 33. Delete Question 1
+DELETE {{host}}/questions/{{questionId1}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 21. Delete Question 2
+### 34. Delete Question 2 (Moved to Group 2)
 DELETE {{host}}/questions/{{questionId2}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 22. Delete Question Group
-DELETE {{host}}/questionGroups/{{groupId}}
+
+### 35. Delete Group 1 (Part 1)
+DELETE {{host}}/questionGroups/{{groupId1}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 23. Delete Part
-DELETE {{host}}/parts/{{partId}}
+### 36. Delete Group 2 (Part 2)
+DELETE {{host}}/questionGroups/{{groupId2}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 24. Delete Part 2
+
+### 37. Delete Part 1
+DELETE {{host}}/parts/{{partId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 38. Delete Part 2
 DELETE {{host}}/parts/{{partId2}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### 25. Delete Exam
+
+### 39. Delete Exam
 DELETE {{host}}/exams/{{examId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

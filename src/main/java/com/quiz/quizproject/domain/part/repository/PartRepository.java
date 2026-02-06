@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PartRepository extends JpaRepository<PartEntity, Long>, JpaSpecificationExecutor<PartEntity> {
     List<PartEntity> findAllByExamId(Long examId);
+    Integer countByExamId(Long examId);
 }

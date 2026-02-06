@@ -48,7 +48,12 @@ public class ExamServiceImpl implements ExamService {
             throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
                     "Exam title already exists");
         }
+        if(examRepository.existsByCode(request.code())) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                    "Exam code already exists");
+        }
         ExamEntity exam = examMapper.toEntity(request);
+        exam.setExamStatus(ExamStatus.DRAFT);
         return examMapper.toResponse(examRepository.save(exam));
     }
 
@@ -70,13 +75,16 @@ public class ExamServiceImpl implements ExamService {
         ExamEntity exam = examRepository.findById(id)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not found",
                         "Exam not found"));
-
-        ExamStatus newStatus = (exam.getExamStatus() == ExamStatus.DRAFT)
-                ? ExamStatus.PUBLISHED
-                : ExamStatus.DRAFT;
-
-        exam.setExamStatus(newStatus);
-
+        if(exam.getExamStatus().equals(ExamStatus.DRAFT)) {
+            Integer totalQuestions = examRepository.countQuestionsByExamId(exam.getId());
+            if (totalQuestions < 40) {
+                throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Incomplete Exam",
+                        "IELTS exam must have accurately 40 questions. Already have " + totalQuestions);
+            }
+            exam.setExamStatus(ExamStatus.PUBLISHED);
+        }else{
+            exam.setExamStatus(ExamStatus.DRAFT);
+        }
         return examMapper.toResponse(examRepository.save(exam));
     }
 

@@ -21,4 +21,6 @@ public interface QuestionService {
     void deleteQuestion(Long id);
 
     void reorderQuestions(Long groupId, List<Long> orderedIds);
+
+    void moveQuestionToAnotherGroup(Long questionId, Long targetGroupId);
 }

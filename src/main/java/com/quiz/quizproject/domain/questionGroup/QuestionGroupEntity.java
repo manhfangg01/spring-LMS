@@ -1,4 +1,4 @@
-package com.quiz.quizproject.domain.questionGroup.entity;
+package com.quiz.quizproject.domain.questionGroup;
 
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.domain.part.PartEntity;

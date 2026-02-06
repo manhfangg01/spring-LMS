@@ -7,5 +7,6 @@ public record QuestionGroupResponse(
                 String imageUrl,
                 String instructions,
                 QuestionType type,
+                Integer orderIndex,
                 Long partId) {
 }

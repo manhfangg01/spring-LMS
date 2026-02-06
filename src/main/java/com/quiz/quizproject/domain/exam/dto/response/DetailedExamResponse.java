@@ -13,7 +13,6 @@ public record DetailedExamResponse(
         String examType,
         Long durationInSeconds,
         String description,
-        Integer totalQuestions,
         ExamStatus examStatus,
         List<DetailedPartResponse> parts
 ) {

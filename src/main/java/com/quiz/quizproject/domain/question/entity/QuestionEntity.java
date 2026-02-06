@@ -2,10 +2,12 @@ package com.quiz.quizproject.domain.question.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
+import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.userAnswer.UserAnswerEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,9 @@ public class QuestionEntity extends BaseEntity {
 
     private Integer orderIndex;
 
-    private String correctAnswer; // for gap-fill
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "correct_answer", columnDefinition = "json")
+    private List<String> correctAnswers; // for gap-fill
 
     @ManyToOne()
     @JoinColumn(name = "question_group_id")

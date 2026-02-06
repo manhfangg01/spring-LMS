@@ -66,4 +66,12 @@ public class QuestionController {
         questionService.reorderQuestions(groupId, orderedIds);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/questions/{questionId}/move/{targetGroupId}")
+    public ResponseEntity<Void> moveQuestionToAnotherGroup(
+            @PathVariable("questionId") Long questionId,
+            @PathVariable("targetGroupId") Long targetGroupId) {
+        questionService.moveQuestionToAnotherGroup(questionId, targetGroupId);
+        return ResponseEntity.noContent().build();
+    }
 }

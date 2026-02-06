@@ -1,0 +1,145 @@
+@host = http://localhost:8000/api
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5oY3V0bzc3N0BnbWFpbC5jb20iLCJpYXQiOjE3NzAwMTk4MTEsImV4cCI6MTc3MDYyNDYxMX0.nN8SIqLE9LPMIZf0Ut-RMfMw27wmx7iExjMGxFfEV7GnlMg6OejzLCGbqTxg6Q1Y4osXwek6pvThDlgq7wt7Rg
+
+### ====================================================================================================================
+### TEST MODULE: GAP-FILL EXAM (Pure Gap-Fill)
+### ====================================================================================================================
+
+### 1. Create Drop-Fill / Gap-Fill Exam
+# @name createExamGapFill
+POST {{host}}/exams
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Gap-Fill Practice Test 02",
+  "examType": "READING",
+  "durationInSeconds": 1800,
+  "description": "A test focused purely on fill-in-the-blank questions.",
+  "code": "GF-TEST-002"
+}
+
+> {%
+    client.global.set("examId", response.body.id);
+    client.log("Created Gap-Fill Exam ID: " + response.body.id);
+%}
+
+
+### 2. Create Part for Gap-Fill
+# @name createPartGapFill
+POST {{host}}/exams/{{examId}}/parts
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Part 1: Vocabulary & Grammar",
+  "passage": "Read the following text and fill in the blanks with appropriate words.",
+  "audioUrl": null,
+  "description": "General knowledge gap fill."
+}
+
+> {%
+    client.global.set("partId", response.body.id);
+    client.log("Created Part ID: " + response.body.id);
+%}
+
+
+### 3. Create Question Group (Gap Fill Type)
+# @name createGroupGapFill
+POST {{host}}/parts/{{partId}}/questionGroups
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "imageUrl": null,
+  "instructions": "Complete the sentences below using NO MORE THAN TWO WORDS.",
+  "type": "FILL_IN_THE_BLANK"
+}
+
+> {%
+    client.global.set("groupId", response.body.id);
+    client.log("Created Group ID: " + response.body.id);
+%}
+
+
+### 4. Create Question 1 (Single Blank)
+# @name createQuestionGapFill1
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "The sun rises in the ______.",
+  "explanation": "It rises in the East.",
+  "correctAnswers": ["East"],
+  "questionOptions": []
+}
+
+> {%
+    client.global.set("questionId1", response.body.id);
+    client.log("Created Question 1 ID: " + response.body.id);
+%}
+
+
+### 5. Create Question 2 (Multiple Blanks)
+# @name createQuestionGapFill2
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "Water boils at ______ degrees Celsius and freezes at ______ degrees Celsius.",
+  "questionType": "FILL_IN_THE_BLANK",
+  "explanation": "100 for boiling, 0 for freezing.",
+  "orderIndex": 2,
+  "questionGroupId": {{groupId}},
+  "correctAnswers": ["100", "0"],
+  "questionOptions": []
+}
+
+> {%
+    client.global.set("questionId2", response.body.id);
+    client.log("Created Question 2 ID: " + response.body.id);
+%}
+
+
+### 6. Verify Questions Created
+GET {{host}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 7. Get Question 2 Details (Check correct answers)
+GET {{host}}/questions/{{questionId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### ====================================================================================================================
+### CLEANUP
+### ====================================================================================================================
+
+### 8. Delete Question 1
+DELETE {{host}}/questions/{{questionId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 9. Delete Question 2
+DELETE {{host}}/questions/{{questionId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 10. Delete Group
+DELETE {{host}}/questionGroups/{{groupId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 11. Delete Part
+DELETE {{host}}/parts/{{partId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 12. Delete Exam
+DELETE {{host}}/exams/{{examId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

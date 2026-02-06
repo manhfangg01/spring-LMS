@@ -1,7 +1,7 @@
 package com.quiz.quizproject.domain.part;
 
 import com.quiz.quizproject.base.BaseEntity;
-import com.quiz.quizproject.domain.questionGroup.entity.QuestionGroupEntity;
+import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
@@ -24,9 +24,9 @@ public class PartEntity extends BaseEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "exam_id", nullable = true)
+    @JoinColumn(name = "exam_id")
     private ExamEntity exam;
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionGroupEntity> questionGroups;
 }

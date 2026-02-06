@@ -4,7 +4,7 @@ import java.util.List;
 public record DetailedQuestionResponse(
         Long id,
         String content,
-        String correctText,
+        List<String> correctAnswers,
         String explanation,
         Integer orderIndex,
         List<QuestionOptionResponse> questionOptions,

@@ -1,0 +1,154 @@
+@host = http://localhost:8000/api
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5oY3V0bzc3N0BnbWFpbC5jb20iLCJpYXQiOjE3NzAwMTk4MTEsImV4cCI6MTc3MDYyNDYxMX0.nN8SIqLE9LPMIZf0Ut-RMfMw27wmx7iExjMGxFfEV7GnlMg6OejzLCGbqTxg6Q1Y4osXwek6pvThDlgq7wt7Rg
+
+### ====================================================================================================================
+### TEST MODULE: LISTENING EXAM
+### ====================================================================================================================
+
+### 1. Create Listening Exam
+# @name createExamListening
+POST {{host}}/exams
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "IELTS Listening Practice Test 01",
+  "examType": "LISTENING",
+  "durationInSeconds": 2400,
+  "description": "Listening comprehension test.",
+  "code": "IELTS-L-001"
+}
+
+> {%
+    client.global.set("examId", response.body.id);
+    client.log("Created Listening Exam ID: " + response.body.id);
+%}
+
+
+### 2. Create Part with Audio
+# @name createPartListening
+POST {{host}}/exams/{{examId}}/parts
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Section 1: Conversation",
+  "passage": "Listen to the conversation between a student and a librarian.",
+  "audioUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  "description": "Conversation about library card application."
+}
+
+> {%
+    client.global.set("partId", response.body.id);
+    client.log("Created Part ID: " + response.body.id);
+%}
+
+
+### 3. Create Question Group (Multiple Choice)
+# @name createGroupListening
+POST {{host}}/parts/{{partId}}/questionGroups
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "imageUrl": null,
+  "instructions": "Choose the correct letter A, B, or C.",
+  "type": "MULTIPLE_CHOICE"
+}
+
+> {%
+    client.global.set("groupId", response.body.id);
+    client.log("Created Group ID: " + response.body.id);
+%}
+
+
+### 4. Create Question 1 (Multiple Choice)
+# @name createQuestionListening1
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "What does the student need to bring to get a library card?",
+  "questionType": "MULTIPLE_CHOICE",
+  "explanation": "The librarian mentions ID card specifically.",
+  "orderIndex": 1,
+  "questionGroupId": {{groupId}},
+  "questionOptions": [
+    { "content": "Passport", "isCorrect": false },
+    { "content": "Student ID Card", "isCorrect": true },
+    { "content": "Driving License", "isCorrect": false }
+  ]
+}
+
+> {%
+    client.global.set("questionId1", response.body.id);
+    client.log("Created Question 1 ID: " + response.body.id);
+%}
+
+
+### 5. Create Question 2 (Multiple Choice)
+# @name createQuestionListening2
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "How many books can a student borrow at once?",
+  "questionType": "MULTIPLE_CHOICE",
+  "explanation": "Limit is 5 books.",
+  "orderIndex": 2,
+  "questionGroupId": {{groupId}},
+  "questionOptions": [
+    { "content": "3", "isCorrect": false },
+    { "content": "5", "isCorrect": true },
+    { "content": "10", "isCorrect": false }
+  ]
+}
+
+> {%
+    client.global.set("questionId2", response.body.id);
+    client.log("Created Question 2 ID: " + response.body.id);
+%}
+
+
+### 6. Verify Exam and Parts
+GET {{host}}/exams/{{examId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### 7. Verify Part (Check Audio URL)
+GET {{host}}/parts/{{partId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+
+### ====================================================================================================================
+### CLEANUP
+### ====================================================================================================================
+
+### 8. Delete Question 1
+DELETE {{host}}/questions/{{questionId1}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 9. Delete Question 2
+DELETE {{host}}/questions/{{questionId2}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 10. Delete Group
+DELETE {{host}}/questionGroups/{{groupId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 11. Delete Part
+DELETE {{host}}/parts/{{partId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 12. Delete Exam
+DELETE {{host}}/exams/{{examId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

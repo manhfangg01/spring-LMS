@@ -43,7 +43,22 @@ public interface QuestionMapper {
     void updateEntityFromRequest(QuestionRequest request, @MappingTarget QuestionEntity entity);
 
     @Mapping(target = "groupId", source = "questionGroup.id")
+//    @Mapping(target = "correctAnswers", expression = "java(mapJsonToList(entity.getCorrectAnswers()))")
     DetailedQuestionResponse toResponse(QuestionEntity entity);
 
     QuestionOptionResponse toOptionResponse(QuestionOptionEntity entity);
+
+
+    // helper for mapping JSON correctAnswers
+//    default List<String> mapJsonToList(String json) {
+//        if (json == null || json.isEmpty()) {
+//            return Collections.emptyList();
+//        }
+//        try {
+//            return new ObjectMapper().readValue(json, new TypeReference<>() {});
+//        } catch (Exception e) {
+//            throw new AppException(e.getClass().toString(), null, "Mapping Error",
+//                    "Failed to map JSON to List<String>: " + e.getMessage());
+//        }
+//    }
 }

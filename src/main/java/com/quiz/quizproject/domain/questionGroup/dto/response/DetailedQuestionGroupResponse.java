@@ -10,6 +10,7 @@ public record DetailedQuestionGroupResponse(
         String imageUrl,
         String instructions,
         QuestionType type,
+        Integer orderIndex,
         List<DetailedQuestionResponse> questions,
         Long partId
 ) {

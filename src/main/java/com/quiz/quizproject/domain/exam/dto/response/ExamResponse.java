@@ -9,7 +9,6 @@ public record ExamResponse(
         String examType,
         Long durationInSeconds,
         String description,
-        String totalQuestions,
         ExamStatus examStatus
 ) {
 }

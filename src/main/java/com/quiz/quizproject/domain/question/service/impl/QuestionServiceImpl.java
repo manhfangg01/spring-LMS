@@ -6,6 +6,7 @@ import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.question.mapper.QuestionMapper;
 import com.quiz.quizproject.domain.question.repository.QuestionRepository;
 import com.quiz.quizproject.domain.question.service.QuestionService;
+import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.questionGroup.repository.QuestionGroupRepository;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +32,24 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public DetailedQuestionResponse createQuestion(Long groupId,QuestionRequest request) {
         QuestionEntity question = questionMapper.toEntity(request);
-        if (groupId != null) {
-            var questionGroup = questionGroupRepository.findById(groupId)
-                    .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
-                            "Question Group not found"));
-            question.setQuestionGroup(questionGroup);
-        }
+        var questionGroup = questionGroupRepository.findById(groupId)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Question Group not found"));
+        validateQuestionLimit(questionGroup);
+        question.setQuestionGroup(questionGroup);
+        int currentQuestionsCount = questionRepository.countByQuestionGroupId(groupId);
+        int nextOrder = currentQuestionsCount + 1;
+        question.setOrderIndex(nextOrder);
         return questionMapper.toResponse(questionRepository.save(question));
+    }
+
+    public void validateQuestionLimit(QuestionGroupEntity group) {
+        int limit=13; //default limit
+        int currentQuestionCount = questionRepository.countByQuestionGroupId(group.getId());
+        if (currentQuestionCount >= limit) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Bad Request",
+                    "Question limit exceeded for this group");
+        }
     }
 
     @Override
@@ -81,6 +95,45 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void reorderQuestions(Long groupId, List<Long> orderedIds) {
+        List<QuestionEntity> questions = questionRepository.findAllById(orderedIds);
+        Map<Long, QuestionEntity> questionMap= questions.stream().collect(Collectors.toMap(QuestionEntity::getId, questionGroup -> questionGroup));
 
+        for(int i=0;i<orderedIds.size();i++){
+            Long id =orderedIds.get(i);
+            QuestionEntity question =questionMap.get(id);
+
+            if (question !=null){
+                question.setOrderIndex(i+1);
+            }
+        }
     }
+
+    @Override
+    public void moveQuestionToAnotherGroup(Long questionId, Long targetGroupId) {
+        QuestionEntity questionToMove = questionRepository.findById(questionId)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Question not found"));
+
+        QuestionGroupEntity oldGroup = questionToMove.getQuestionGroup();
+        Integer removedIndex = questionToMove.getOrderIndex();
+
+        if(oldGroup.getId().equals(targetGroupId)){
+            return;
+        }
+
+        QuestionGroupEntity targetGroup = questionGroupRepository.findById(targetGroupId)
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
+                        "Target Question Group not found"));
+
+        validateQuestionLimit(targetGroup);
+
+        Integer maxOrderInTargetGroup = questionRepository.getMaxOrderIndexByQuestionGroupId(targetGroup.getId()).orElse(0);
+        Integer nextOrderIndex = maxOrderInTargetGroup + 1;
+        questionToMove.setQuestionGroup(targetGroup);
+        questionToMove.setOrderIndex(nextOrderIndex);
+        questionRepository.decreaseOrderIndexOnQuestionGroup(targetGroupId, removedIndex);
+        questionRepository.save(questionToMove);
+    }
+
+
 }
