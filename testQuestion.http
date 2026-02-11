@@ -1,27 +1,26 @@
-@baseUrl = http://localhost:8000/api/questions
-@examId = 1
+@baseUrl = http://localhost:8000/api
+@groupId = 1
+@questionId = 1
 @accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5oY3V0bzc3N0BnbWFpbC5jb20iLCJpYXQiOjE3NzAwMTk4MTEsImV4cCI6MTc3MDYyNDYxMX0.nN8SIqLE9LPMIZf0Ut-RMfMw27wmx7iExjMGxFfEV7GnlMg6OejzLCGbqTxg6Q1Y4osXwek6pvThDlgq7wt7Rg
 
 ### Get all questions (Paginated)
-GET {{baseUrl}}?page=0&size=10
+GET {{baseUrl}}/questions?page=1&size=10
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 ### Get a specific question by ID
-# Replace '1' with a valid question ID from the previous request
-GET {{baseUrl}}/1
+GET {{baseUrl}}/questions/{{questionId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### Create a new Question
-POST {{baseUrl}}
+### Create a new SELECTION Question
+# Note: Ensure groupId refers to a group of type SELECTION
+POST {{baseUrl}}/questionGroups/{{groupId}}/questions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "content": "What is the capital of France?",
-  "examId": {{examId}},
-  "questionType": "MULTIPLE_CHOICE",
   "explanation": "Paris is the capital and most populous city of France.",
   "questionOptions": [
     {
@@ -43,46 +42,27 @@ Authorization: Bearer {{accessToken}}
   ]
 }
 
-### Create a FILL_IN_THE_BLANK Question
-POST {{baseUrl}}
+### Create a INPUT Question (Gap Fill)
+# Note: Ensure groupId refers to a group of type INPUT
+POST {{baseUrl}}/questionGroups/{{groupId}}/questions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "content": "",
-  "examId": {{examId}},
-  "questionType": "FILL_IN_THE_BLANK",
+  "content": "The capital of France is [blank].",
   "explanation": "Because you're supposed to know this!",
-  "questionOptions": [
-    {
-      "content": "Berlin",
-      "isCorrect": false
-    },
-    {
-      "content": "London",
-      "isCorrect": false
-    },
-    {
-      "content": "Paris",
-      "isCorrect": true
-    },
-    {
-      "content": "Madrid",
-      "isCorrect": false
-    }
-  ]
+  "correctAnswers": ["Paris"],
+  "questionOptions": []
 }
 
 ### Update an existing Question
-# Replace '1' with the ID of the question you just created
-PUT {{baseUrl}}/4
+PUT {{baseUrl}}/questions/{{questionId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "content": "What is the capital of France? (Updated) chap2dff",
-  "examId": {{examId}},
-   "questionType": "MULTIPLE_CHOICE",
+  "content": "What is the capital of France? (Updated)",
+  "explanation": "Updated explanation",
   "questionOptions": [
     {
       "content": "Berlin",
@@ -100,12 +80,11 @@ Authorization: Bearer {{accessToken}}
 }
 
 ### Delete a Question
-# Replace '1' with the ID of the question you want to delete
-DELETE {{baseUrl}}/3
+DELETE {{baseUrl}}/questions/{{questionId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-### Get all questions by Exam ID
-GET {{baseUrl}}/exam/{{examId}}
+### Get Question Group by ID
+GET {{baseUrl}}/questionGroups/{{groupId}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}

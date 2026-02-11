@@ -1,0 +1,148 @@
+@host = http://localhost:8000/api
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5oY3V0bzc3N0BnbWFpbC5jb20iLCJpYXQiOjE3NzA2OTkyOTgsImV4cCI6MTc3MTMwNDA5OH0.cDriK3blyKpyxCLLnBDYl_TyJlwdkp9j1pjO0KJ94lLIDuGLvRAT6hBDayH81O4hJtpou0R1e9cGqcTb1bcqyg
+
+### ====================================================================================================================
+### TEST MODULE: MATCHING EXAM
+### ====================================================================================================================
+
+### 1. Create Matching Exam
+# @name createExamMatching
+POST {{host}}/exams
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Matching Question Practice Test 2",
+  "examType": "READING",
+  "durationInSeconds": 1800,
+  "description": "Test specifically for Matching question types.",
+  "code": "MATCHING-002"
+}
+
+> {%
+    client.global.set("examId", response.body.id);
+    client.log("Created Matching Exam ID: " + response.body.id);
+%}
+
+
+### 2. Create Part for Matching
+# @name createPartMatching
+POST {{host}}/exams/{{examId}}/parts
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Part 1: Vocabulary Matching",
+  "passage": "Match the words with their definitions.",
+  "audioUrl": null,
+  "description": "Vocabulary test part 1"
+}
+
+> {%
+    client.global.set("partId", response.body.id);
+    client.log("Created Part ID: " + response.body.id);
+%}
+
+
+### 3. Create Question Group (Matching Type)
+# @name createGroupMatching
+POST {{host}}/parts/{{partId}}/questionGroups
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "imageUrl": null,
+  "instructions": "Match each heading (i-iii) with the correct paragraph (A-C).",
+  "type": "MATCHING",
+  "sharedOptions": [
+    { "label": "i", "content": "Introduction to Biology" },
+    { "label": "ii", "content": "Photosynthesis Process" },
+    { "label": "iii", "content": "Cellular Respiration" },
+    { "label": "iv", "content": "Genetic Mutation" }
+  ]
+}
+
+> {%
+    client.global.set("groupId", response.body.id);
+    client.log("Created Group ID: " + response.body.id);
+%}
+
+
+### CHECK RELATIONSHIP [Question -> QuestionGroup]: Get Group 1 (Should see questions in new order)
+# Verifies questions are listed in Group 1
+GET {{host}}/questionGroups/{{groupId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.log("Question Group id: "+ client.global.get("groupId"));
+ %}
+
+
+
+### 4. Create Question 1
+# @name createQuestionMatching1
+# Matches option "i"
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "Paragraph A matches which heading?",
+  "explanation": "Paragraph A discusses basic biological concepts.",
+  "labelMatching": "i",
+  "questionOptions": [],
+  "correctAnswers": []
+}
+
+> {%
+    client.global.set("questionId1", response.body.id);
+    client.log("Created Question 1 ID: " + response.body.id);
+%}
+
+
+### 5. Create Question 2
+# @name createQuestionMatching2
+# Matches option "iii"
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "Paragraph B matches which heading?",
+  "explanation": "Paragraph B explains how cells produce energy.",
+  "labelMatching": "iii",
+  "questionOptions": [],
+  "correctAnswers": []
+}
+
+> {%
+    client.global.set("questionId2", response.body.id);
+    client.log("Created Question 2 ID: " + response.body.id);
+%}
+
+
+### 6. Create Question 3
+# @name createQuestionMatching3
+# Matches option "ii"
+POST {{host}}/questionGroups/{{groupId}}/questions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "content": "Paragraph C matches which heading?",
+  "explanation": "Paragraph C details the conversion of light into energy.",
+  "labelMatching": "ii",
+  "questionOptions": [],
+  "correctAnswers": []
+}
+
+> {%
+    client.global.set("questionId3", response.body.id);
+    client.log("Created Question 3 ID: " + response.body.id);
+%}
+
+### 7. Get All Questions in Group
+GET {{host}}/questionGroups/{{groupId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

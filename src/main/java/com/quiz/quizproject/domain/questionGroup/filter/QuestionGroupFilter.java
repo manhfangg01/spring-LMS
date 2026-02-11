@@ -1,7 +1,7 @@
 package com.quiz.quizproject.domain.questionGroup.filter;
 
 import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
-import com.quiz.quizproject.util.constant.QuestionType;
+import com.quiz.quizproject.util.constant.QuestionGroupType;
 import jakarta.persistence.criteria.Predicate;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class QuestionGroupFilter {
     private String instructions;
-    private QuestionType type;
+    private QuestionGroupType type;
     private Long partId;
 
     public Specification<QuestionGroupEntity> toSpecification() {

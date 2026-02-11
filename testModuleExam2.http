@@ -53,7 +53,7 @@ Authorization: Bearer {{accessToken}}
 {
   "imageUrl": null,
   "instructions": "Complete the sentences below using NO MORE THAN TWO WORDS.",
-  "type": "FILL_IN_THE_BLANK"
+  "type": "INPUT"
 }
 
 > {%
@@ -89,10 +89,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "content": "Water boils at ______ degrees Celsius and freezes at ______ degrees Celsius.",
-  "questionType": "FILL_IN_THE_BLANK",
   "explanation": "100 for boiling, 0 for freezing.",
-  "orderIndex": 2,
-  "questionGroupId": {{groupId}},
   "correctAnswers": ["100", "0"],
   "questionOptions": []
 }

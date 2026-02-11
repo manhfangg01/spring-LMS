@@ -6,9 +6,10 @@ import com.quiz.quizproject.domain.question.dto.response.QuestionOptionResponse;
 import com.quiz.quizproject.domain.question.dto.response.DetailedQuestionResponse;
 import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.question.entity.QuestionOptionEntity;
+import com.quiz.quizproject.domain.sharedOption.mapper.SharedOptionMapper;
 import org.mapstruct.*;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SharedOptionMapper.class})
 public interface QuestionMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -27,6 +28,7 @@ public interface QuestionMapper {
         }
     }
 
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -39,7 +41,6 @@ public interface QuestionMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "questionGroup", ignore = true)
     @Mapping(target = "userAnswers", ignore = true)
-    @Mapping(target = "questionOptions", ignore = true)
     void updateEntityFromRequest(QuestionRequest request, @MappingTarget QuestionEntity entity);
 
     @Mapping(target = "groupId", source = "questionGroup.id")

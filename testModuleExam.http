@@ -12,11 +12,11 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "IELTS Reading Practice Test 11",
+  "title": "IELTS Reading Practice Test 12",
   "examType": "READING",
   "durationInSeconds": 3600,
   "description": "Another test.",
-  "code": "IELTS-R-0011"
+  "code": "IELTS-R-0012"
 }
 
 > {%
@@ -174,14 +174,14 @@ Authorization: Bearer {{accessToken}}
 
 ### 13. Create Question Group 1 (in Part 1)
 # @name createGroup1
-POST {{host}}/parts/{{partId3}}/questionGroups
+POST {{host}}/parts/{{partId1}}/questionGroups
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "imageUrl": "http://example.com/image.png",
   "instructions": "Choose the best answer. TEST PART 33",
-  "type": "MULTIPLE_CHOICE"
+  "type": "SELECTION"
 }
 
 > {%
@@ -199,7 +199,7 @@ Authorization: Bearer {{accessToken}}
 {
   "imageUrl": "http://example.com/image2.png",
   "instructions": "Fill in the blanks. TEST PART 2",
-  "type": "FILL_IN_THE_BLANK"
+  "type": "MATCHING"
 }
 
 > {%
@@ -209,14 +209,14 @@ Authorization: Bearer {{accessToken}}
 
 ### 14. Create Question Group 3 (in Part 1)
 # @name createGroup3
-POST {{host}}/parts/{{partId2}}/questionGroups
+POST {{host}}/parts/{{partId1}}/questionGroups
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "imageUrl": "http://example.com/image3.png",
-  "instructions": "Fill in the blanks.",
-  "type": "FILL_IN_THE_BLANK"
+  "instructions": "choice in the blanks.",
+  "type": "SELECTION"
 }
 
 > {%
@@ -296,13 +296,12 @@ Authorization: Bearer {{accessToken}}
 
 ### 23. Create Question 1 (in Group 1)
 # @name createQuestion1
-POST {{host}}/questionGroups/{{groupId1}}/questions
+POST {{host}}/questionGroups/{{groupId3}}/questions
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "content": "What is the capital of France? TEST 33",
-  "questionType": "MULTIPLE_CHOICE",
   "explanation": "Paris is the capital.",
   "questionOptions": [
     { "content": "London", "isCorrect": false },
@@ -362,9 +361,9 @@ Authorization: Bearer {{accessToken}}
   "questionType": "MULTIPLE_CHOICE",
   "explanation": "Updated explanation.",
   "questionOptions": [
-    { "content": "London", "isCorrect": false },
+    { "content": "Gudon", "isCorrect": false },
     { "content": "Paris", "isCorrect": true },
-    { "content": "Berlin", "isCorrect": false },
+    { "content": "Beggingsssss", "isCorrect": false },
     { "content": "Rome", "isCorrect": false }
   ]
 }

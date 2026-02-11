@@ -53,7 +53,7 @@ Authorization: Bearer {{accessToken}}
 {
   "imageUrl": null,
   "instructions": "Choose the correct letter A, B, or C.",
-  "type": "MULTIPLE_CHOICE"
+  "type": "SELECTION"
 }
 
 > {%
@@ -70,10 +70,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "content": "What does the student need to bring to get a library card?",
-  "questionType": "MULTIPLE_CHOICE",
   "explanation": "The librarian mentions ID card specifically.",
-  "orderIndex": 1,
-  "questionGroupId": {{groupId}},
   "questionOptions": [
     { "content": "Passport", "isCorrect": false },
     { "content": "Student ID Card", "isCorrect": true },
@@ -98,10 +95,7 @@ Authorization: Bearer {{accessToken}}
   "questionType": "MULTIPLE_CHOICE",
   "explanation": "Limit is 5 books.",
   "orderIndex": 2,
-  "questionGroupId": {{groupId}},
-  "questionOptions": [
-    { "content": "3", "isCorrect": false },
-    { "content": "5", "isCorrect": true },
+  "explanation": "Limit is 5 books.",: true },
     { "content": "10", "isCorrect": false }
   ]
 }

@@ -4,11 +4,12 @@ import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.exam.dto.request.ExamRequest;
 import com.quiz.quizproject.domain.exam.dto.response.DetailedExamResponse;
 import com.quiz.quizproject.domain.exam.dto.response.ExamResponse;
+import com.quiz.quizproject.domain.part.mapper.PartMapper;
 import org.mapstruct.*;
 import org.springframework.stereotype.Service;
 
 @Service
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = PartMapper.class)
 public interface ExamMapper {
     ExamEntity toEntity(ExamRequest examRequest);
 

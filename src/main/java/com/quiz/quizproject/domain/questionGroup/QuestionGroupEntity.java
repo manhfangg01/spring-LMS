@@ -3,7 +3,8 @@ package com.quiz.quizproject.domain.questionGroup;
 import com.quiz.quizproject.base.BaseEntity;
 import com.quiz.quizproject.domain.part.PartEntity;
 import com.quiz.quizproject.domain.question.entity.QuestionEntity;
-import com.quiz.quizproject.util.constant.QuestionType;
+import com.quiz.quizproject.domain.sharedOption.SharedOptionEntity;
+import com.quiz.quizproject.util.constant.QuestionGroupType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class QuestionGroupEntity extends BaseEntity {
     private String instructions;
     private Integer orderIndex;
     @Enumerated(EnumType.STRING)
-    private QuestionType type;
+    private QuestionGroupType type;
 
 
     @ManyToOne
@@ -31,4 +32,10 @@ public class QuestionGroupEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "questionGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionEntity> questions;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SharedOptionEntity> sharedOptions;
+
+
+
 }

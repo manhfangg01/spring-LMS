@@ -8,6 +8,8 @@ import com.quiz.quizproject.domain.question.repository.QuestionRepository;
 import com.quiz.quizproject.domain.question.service.QuestionService;
 import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.questionGroup.repository.QuestionGroupRepository;
+import com.quiz.quizproject.domain.sharedOption.SharedOptionEntity;
+import com.quiz.quizproject.util.constant.QuestionGroupType;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,16 +32,30 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionGroupRepository questionGroupRepository;
 
     @Override
-    public DetailedQuestionResponse createQuestion(Long groupId,QuestionRequest request) {
-        QuestionEntity question = questionMapper.toEntity(request);
+    public DetailedQuestionResponse createQuestion(Long groupId, QuestionRequest request) {
         var questionGroup = questionGroupRepository.findById(groupId)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
                         "Question Group not found"));
         validateQuestionLimit(questionGroup);
+        QuestionEntity question = questionMapper.toEntity(request);
+        question.setType(questionGroup.getType());
+        if(questionGroup.getType().equals(QuestionGroupType.MATCHING)){
+            List<SharedOptionEntity> sharedOptions = questionGroup.getSharedOptions();
+            Map<String, SharedOptionEntity> optionMap = sharedOptions.stream()
+                    .collect(Collectors.toMap(SharedOptionEntity::getLabel, sharedOption -> sharedOption));
+            String labelMatching = request.labelMatching();
+            SharedOptionEntity optionMatching = optionMap.get(labelMatching);
+            if(optionMatching == null){
+                throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Bad Request",
+                        "Valid labelMatching is required for MATCHING question type");
+            }
+            question.setCorrectSharedOption(optionMatching);
+        }
         question.setQuestionGroup(questionGroup);
         int currentQuestionsCount = questionRepository.countByQuestionGroupId(groupId);
         int nextOrder = currentQuestionsCount + 1;
         question.setOrderIndex(nextOrder);
+        question.setType(questionGroup.getType());
         return questionMapper.toResponse(questionRepository.save(question));
     }
 
@@ -74,14 +90,13 @@ public class QuestionServiceImpl implements QuestionService {
 
         questionMapper.updateEntityFromRequest(request, question);
 
-        if (request.questionOptions() != null) {
-            question.getQuestionOptions().clear();
-            var newOptions = request.questionOptions().stream()
-                    .map(questionMapper::toOptionEntity)
-                    .toList();
-            newOptions.forEach(question::addOption);
-        }
-
+//        if (request.questionOptions() != null) {
+//            question.getQuestionOptions().clear();
+//            var newOptions = request.questionOptions().stream()
+//                    .map(questionMapper::toOptionEntity)
+//                    .toList();
+//            newOptions.forEach(question::addOption);
+//        }
         return questionMapper.toResponse(questionRepository.save(question));
     }
 

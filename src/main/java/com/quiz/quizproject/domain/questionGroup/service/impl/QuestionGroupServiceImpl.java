@@ -10,6 +10,8 @@ import com.quiz.quizproject.domain.questionGroup.filter.QuestionGroupFilter;
 import com.quiz.quizproject.domain.questionGroup.mapper.QuestionGroupMapper;
 import com.quiz.quizproject.domain.questionGroup.repository.QuestionGroupRepository;
 import com.quiz.quizproject.domain.questionGroup.service.QuestionGroupService;
+import com.quiz.quizproject.domain.sharedOption.SharedOptionEntity;
+import com.quiz.quizproject.util.constant.QuestionGroupType;
 import com.quiz.quizproject.util.exception.handler.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,16 +49,26 @@ public class QuestionGroupServiceImpl implements QuestionGroupService {
 
     @Override
     public QuestionGroupResponse createQuestionGroup(QuestionGroupRequest request, Long partId) {
-        QuestionGroupEntity questionGroup = questionGroupMapper.toEntity(request);
+        validateMatchingType(request);
         PartEntity part = partRepository.findById(partId)
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.NOT_FOUND, "Not Found",
                         "Part not found"));
         validateGroupLimit(part);
+        QuestionGroupEntity questionGroup = questionGroupMapper.toEntity(request);
         int currentGroupsCount = questionGroupRepository.countByPartId(partId);
         int nextOrder = currentGroupsCount + 1;
         questionGroup.setPart(part);
         questionGroup.setOrderIndex(nextOrder);
         return questionGroupMapper.toResponse(questionGroupRepository.save(questionGroup));
+    }
+
+    public void validateMatchingType(QuestionGroupRequest request){
+        QuestionGroupType questionGroupType = request.type();
+        List<SharedOptionEntity> sharedOptions = request.sharedOptions();
+        if(questionGroupType.equals(QuestionGroupType.MATCHING) && (sharedOptions == null || sharedOptions.isEmpty())){
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Invalid Data",
+                    "Matching question groups must have shared options defined.");
+        }
     }
 
 

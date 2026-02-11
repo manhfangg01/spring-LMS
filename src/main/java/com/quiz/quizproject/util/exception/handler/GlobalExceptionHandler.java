@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ErrorDetail> handleUnwantedException(Exception ex) {
                 return ResponseEntity
                                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(new ErrorDetail("ServerError", 500, "System error: " + ex.getMessage(),
-                                                System.currentTimeMillis(), null));
+                                .body(new ErrorDetail("ServerError", 500, "Something went wrong",
+                                                System.currentTimeMillis(), "System error: " + ex.getMessage()+ ex.getClass().getSimpleName()));
         }
 
 }
