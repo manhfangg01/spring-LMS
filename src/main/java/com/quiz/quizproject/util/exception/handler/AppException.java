@@ -10,8 +10,8 @@ public class AppException extends RuntimeException {
     private final Object error;
 
     public AppException(String name, HttpStatus statusCode, String message, Object error) {
-        this.statusCode = statusCode;
         super(message);
+        this.statusCode = statusCode;
         this.name = name;
         this.error = error;
     }
