@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,14 +36,14 @@ public class SharedOptionService {
     public List<SharedOptionResponse> getAllSharedOptions() {
         return sharedOptionRepository.findAll().stream()
                 .map(sharedOptionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<SharedOptionResponse> getSharedOptionsByGroup(String optionGroup) {
         return sharedOptionRepository.findByOptionGroup(optionGroup).stream()
                 .map(sharedOptionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

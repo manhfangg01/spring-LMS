@@ -33,7 +33,7 @@ public class SharedOptionController {
     public ResponseEntity<List<SharedOptionResponse>> getAllSharedOptions(
             @RequestParam(required = false) String optionGroup) {
         List<SharedOptionResponse> responses;
-        if (optionGroup != null && !optionGroup.isEmpty()) {
+        if (optionGroup != null && !optionGroup.isBlank()) {
             responses = sharedOptionService.getSharedOptionsByGroup(optionGroup);
         } else {
             responses = sharedOptionService.getAllSharedOptions();
