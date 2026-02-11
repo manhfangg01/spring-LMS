@@ -5,6 +5,7 @@ import com.quiz.quizproject.domain.sharedOption.dto.SharedOptionResponse;
 import com.quiz.quizproject.domain.sharedOption.entity.SharedOptionEntity;
 import com.quiz.quizproject.domain.sharedOption.mapper.SharedOptionMapper;
 import com.quiz.quizproject.domain.sharedOption.repository.SharedOptionRepository;
+import com.quiz.quizproject.util.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class SharedOptionService {
     @Transactional(readOnly = true)
     public SharedOptionResponse getSharedOptionById(Long id) {
         SharedOptionEntity entity = sharedOptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("SharedOption not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("SharedOption", id));
         return sharedOptionMapper.toResponse(entity);
     }
 
@@ -49,7 +50,7 @@ public class SharedOptionService {
     @Transactional
     public SharedOptionResponse updateSharedOption(Long id, SharedOptionRequest request) {
         SharedOptionEntity entity = sharedOptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("SharedOption not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("SharedOption", id));
         
         entity.setContent(request.getContent());
         entity.setLabel(request.getLabel());
@@ -62,7 +63,7 @@ public class SharedOptionService {
     @Transactional
     public void deleteSharedOption(Long id) {
         if (!sharedOptionRepository.existsById(id)) {
-            throw new RuntimeException("SharedOption not found with id: " + id);
+            throw new EntityNotFoundException("SharedOption", id);
         }
         sharedOptionRepository.deleteById(id);
     }

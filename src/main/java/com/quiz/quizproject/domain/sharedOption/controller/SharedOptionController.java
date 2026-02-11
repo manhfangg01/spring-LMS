@@ -3,6 +3,7 @@ package com.quiz.quizproject.domain.sharedOption.controller;
 import com.quiz.quizproject.domain.sharedOption.dto.SharedOptionRequest;
 import com.quiz.quizproject.domain.sharedOption.dto.SharedOptionResponse;
 import com.quiz.quizproject.domain.sharedOption.service.SharedOptionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class SharedOptionController {
     private final SharedOptionService sharedOptionService;
 
     @PostMapping
-    public ResponseEntity<SharedOptionResponse> createSharedOption(@RequestBody SharedOptionRequest request) {
+    public ResponseEntity<SharedOptionResponse> createSharedOption(@Valid @RequestBody SharedOptionRequest request) {
         SharedOptionResponse response = sharedOptionService.createSharedOption(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -43,7 +44,7 @@ public class SharedOptionController {
     @PutMapping("/{id}")
     public ResponseEntity<SharedOptionResponse> updateSharedOption(
             @PathVariable Long id,
-            @RequestBody SharedOptionRequest request) {
+            @Valid @RequestBody SharedOptionRequest request) {
         SharedOptionResponse response = sharedOptionService.updateSharedOption(id, request);
         return ResponseEntity.ok(response);
     }
