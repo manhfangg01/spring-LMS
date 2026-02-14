@@ -80,8 +80,9 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(request.password()));
         String finalUserName = request.userName();
-        while (userRepo.existsByUserNameAndIdNot(finalUserName, id)) {
-            finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
+        // fix: Nên cho phép người chỉnh sửa lại tên họ mong muốn chứ không nên thêm chuỗi ngẫu nhiên đằng sau
+        if(userRepo.existsByUserNameAndIdNot(finalUserName, id)) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error", "Username is already existed. Consider trying another");
         }
         user.setUserName(finalUserName);
         userMapper.updateEntityFromRequest(request, user);

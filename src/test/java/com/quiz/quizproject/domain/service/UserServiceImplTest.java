@@ -4,6 +4,7 @@ import com.quiz.quizproject.domain.RoleEntity;
 import com.quiz.quizproject.domain.user.UserEntity;
 import com.quiz.quizproject.domain.user.dto.request.UserRequest;
 import com.quiz.quizproject.domain.user.dto.response.UserResponse;
+import com.quiz.quizproject.domain.user.filter.UserFilter;
 import com.quiz.quizproject.domain.user.mapper.UserMapper;
 import com.quiz.quizproject.domain.user.repository.UserRepository;
 import com.quiz.quizproject.domain.user.service.impl.UserServiceImpl;
@@ -15,8 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
 // Theo quy tắc thì không nên Mock cách static class hay method hãy coi nó là resources
@@ -35,11 +39,10 @@ public class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
     //================================================
     //--------------------HAPPY PATH------------------
     //================================================
-
-
 
     // Creating User Test
     @Test
@@ -90,6 +93,93 @@ public class UserServiceImplTest {
             Mockito.verify(userMapper, Mockito.times(1)).toResponse(userEntity);
         }
     }
+
+    // getting all user test
+
+    @Test
+    public void getAllUsers_ShouldReturnPageOfResponses_WhenCallWithValidParams(){
+        // Arrange
+        int pageNumber = 0;
+        int pageSize = 10;
+        Sort sortBy =Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(0,10);
+
+        UserFilter filter = new UserFilter();
+
+        UserEntity user1= new UserEntity();
+        user1.setId(1L);
+        user1.setUserName("Manh 1");
+        UserEntity user2= new UserEntity();
+        user2.setId(2L);
+        user2.setUserName("Manh 2");
+
+        List<UserEntity> users= List.of(user1, user2);
+
+        Page<UserEntity> expectedUserPage = new PageImpl<>(users, pageable, users.size());
+
+        // Arrange Expected Response
+        UserResponse res1 = UserResponse.builder().id(1L).userName("Manh 1").build();
+        UserResponse res2 =UserResponse.builder().id(2L).userName("Manh 2").build();
+
+        // Declare Mockito function
+        Mockito.when(userRepository.findAll(Mockito.<Specification<UserEntity>>any(), Mockito.eq(pageable))).thenReturn(expectedUserPage);
+
+        // MockMapper
+        Mockito.when(userMapper.toResponse(user1)).thenReturn(res1);
+        Mockito.when(userMapper.toResponse(user2)).thenReturn(res2);
+
+        // Trigger Action
+
+        Page<UserResponse> result = userService.getAllUsers(pageable, filter);
+
+        // Assert
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getTotalPages()).isEqualTo(result.getTotalPages());
+        Assertions.assertThat(result.getContent().size()).isEqualTo(result.getContent().size());
+
+        // Assert internal elements
+        Assertions.assertThat(result.getContent().getFirst().userName()).isEqualTo("Manh 1");
+        Assertions.assertThat(result.getContent().getLast().userName()).isEqualTo("Manh 2");
+
+        // verify execution times
+        Mockito.verify(userRepository, Mockito.times(1)).findAll(Mockito.<Specification<UserEntity>>any(), Mockito.eq(pageable));
+        Mockito.verify(userMapper, Mockito.times(2)).toResponse(Mockito.any(UserEntity.class));
+    }
+
+    // Updating User Test
+    @Test
+    public void updateUser_ShouldReturnUpdatedUserResponse_WhenValidIdAndRequestSubmitted(){
+        // Arrange
+        Long givenId=1L;
+
+        UserEntity initialUser= new UserEntity();
+        initialUser.setId(givenId);
+        initialUser.setUserName("Phan Van Manh");
+        initialUser.setEmail("phanvanmanh@gmail.com");
+        initialUser.setStatus(UserStatus.ACTIVE);
+        initialUser.setRole(RoleEntity.builder().name("USER").build());
+        initialUser.setPassword("Initial hash password");
+
+        UserRequest request = UserRequest.builder().userName("Manh Van Phan").email("manhchan@gmail.com").status(UserStatus.BANNED).roleName("ADMIN").password("123456").build();
+
+        UserEntity updatedUser= new UserEntity();
+        updatedUser.setUserName(request.userName());
+        updatedUser.setEmail(request.email());
+        updatedUser.setStatus(request.status());
+
+        UserResponse response = UserResponse.builder().userName(updatedUser.getUserName()).email(updatedUser.getEmail()).status(updatedUser.getStatus()).build();
+
+        // Declare Mock function
+        Mockito.when(userRepository.findById(Mockito.eq(givenId))).thenReturn(Optional.of(initialUser));
+        Mockito.when(userRepository.existsByEmailAndIdNot(Mockito.eq(request.email()), Mockito.eq(givenId))).thenReturn(false);
+        Mockito.when(roleRepository.findByName(Mockito.eq("ADMIN"))).thenReturn(Optional.of(RoleEntity.builder().name("ADMIn").build()));
+        Mockito.when(passwordEncoder.encode("Updated hash password"));
+        Mockito.when(userRepository.existsByUserNameAndIdNot(request.userName(), givenId));
+
+
+    }
+
+
 
 
 
