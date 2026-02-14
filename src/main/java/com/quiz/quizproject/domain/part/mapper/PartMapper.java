@@ -15,18 +15,14 @@ public interface PartMapper {
     @Mapping(target = "examId", source = "exam.id")
     DetailedPartResponse toDetailedResponse(PartEntity entity);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "exam", ignore = true) // Handled in Service
     @Mapping(target = "questionGroups", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     PartEntity toEntity(PartRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
+  
     @Mapping(target = "exam", ignore = true) // Handled in Service
     @Mapping(target = "questionGroups", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+
     void updateEntityFromRequest(PartRequest request, @MappingTarget PartEntity entity);
 }

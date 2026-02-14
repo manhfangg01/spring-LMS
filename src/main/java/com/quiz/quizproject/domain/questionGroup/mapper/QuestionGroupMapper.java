@@ -25,18 +25,12 @@ public interface QuestionGroupMapper {
     DetailedQuestionGroupResponse toDetailedResponse(QuestionGroupEntity entity);
 
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "part", ignore = true) // Handled in service
     @Mapping(target = "questions", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     QuestionGroupEntity toEntity(QuestionGroupRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "part", ignore = true) // Handled in service
     @Mapping(target = "questions", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     void updateEntityFromRequest(QuestionGroupRequest request, @MappingTarget QuestionGroupEntity entity);
 }

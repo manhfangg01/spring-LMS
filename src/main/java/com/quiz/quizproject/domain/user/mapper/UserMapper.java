@@ -10,21 +10,17 @@ public interface UserMapper {
     @Mapping(target = "roleName", source = "role.name")
     UserResponse toResponse(UserEntity entity);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "avatarUrl", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     UserEntity toEntity(UserRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE) // Thanks to this line, if
                                                                                              // a field is null, it will
                                                                                              // not set it to null but
                                                                                              // keep the old value
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+  
+
     @Mapping(target = "role", ignore = true) // manually handled in service
     @Mapping(target = "password", ignore = true) // manually handled in service
     @Mapping(target = "userName", ignore = true) // manually handled uniqueness

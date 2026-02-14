@@ -12,12 +12,6 @@ import org.mapstruct.*;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {SharedOptionMapper.class})
 public interface QuestionMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "questionGroup", ignore = true)
-    @Mapping(target = "userAnswers", ignore = true)
-    @Mapping(target = "questionOptions", source = "questionOptions")
     QuestionEntity toEntity(QuestionRequest request);
 
     @AfterMapping
@@ -28,17 +22,12 @@ public interface QuestionMapper {
         }
     }
 
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "question", ignore = true)
     QuestionOptionEntity toOptionEntity(QuestionOptionRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+  
+
     @Mapping(target = "questionGroup", ignore = true)
     @Mapping(target = "userAnswers", ignore = true)
     void updateEntityFromRequest(QuestionRequest request, @MappingTarget QuestionEntity entity);

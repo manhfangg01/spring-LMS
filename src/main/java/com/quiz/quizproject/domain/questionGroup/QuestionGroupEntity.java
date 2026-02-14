@@ -6,10 +6,8 @@ import com.quiz.quizproject.domain.question.entity.QuestionEntity;
 import com.quiz.quizproject.domain.sharedOption.SharedOptionEntity;
 import com.quiz.quizproject.util.constant.QuestionGroupType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.List;
 
 @Entity
@@ -18,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class QuestionGroupEntity extends BaseEntity {
     private String imageUrl;
     private String instructions;

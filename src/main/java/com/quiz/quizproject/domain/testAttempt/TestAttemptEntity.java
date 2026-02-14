@@ -6,10 +6,7 @@ import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.domain.user.UserEntity;
 import com.quiz.quizproject.util.constant.TestAttemptStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -22,6 +19,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TestAttemptEntity extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime submitTime;

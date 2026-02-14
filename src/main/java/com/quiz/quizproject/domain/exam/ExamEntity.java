@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ExamEntity extends BaseEntity {
     @Column(unique = true)
     private String title;

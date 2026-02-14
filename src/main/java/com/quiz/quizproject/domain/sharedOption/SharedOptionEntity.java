@@ -11,6 +11,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SharedOptionEntity extends BaseEntity {
     // Nhãn hiển thị: "i", "ii", "A", "B"... (Dùng để FE render label)
     private String label;

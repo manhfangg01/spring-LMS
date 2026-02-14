@@ -20,6 +20,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class QuestionEntity extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;

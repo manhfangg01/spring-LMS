@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class QuestionOptionEntity extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;

@@ -5,8 +5,7 @@ import com.quiz.quizproject.domain.questionGroup.QuestionGroupEntity;
 import com.quiz.quizproject.domain.exam.ExamEntity;
 import com.quiz.quizproject.util.constant.ExamType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +13,9 @@ import java.util.List;
 @Table(name="parts")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PartEntity extends BaseEntity {
     private String title;
     private Integer orderIndex;

@@ -18,9 +18,8 @@ public interface ExamMapper {
     DetailedExamResponse toDetailedResponse(ExamEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+  
+
     @Mapping(target = "testAttempts", ignore = true)
     @Mapping(target = "examStatus", ignore = true)
     void updateEntityFromRequest(ExamRequest request, @MappingTarget ExamEntity entity);
