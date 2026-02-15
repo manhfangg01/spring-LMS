@@ -99,9 +99,6 @@ public class UserServiceImplTest {
     @Test
     public void getAllUsers_ShouldReturnPageOfResponses_WhenCallWithValidParams(){
         // Arrange
-        int pageNumber = 0;
-        int pageSize = 10;
-        Sort sortBy =Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(0,10);
 
         UserFilter filter = new UserFilter();
@@ -149,10 +146,12 @@ public class UserServiceImplTest {
     // Updating User Test
     @Test
     public void updateUser_ShouldReturnUpdatedUserResponse_WhenValidIdAndRequestSubmitted(){
-        // Arrange
-        Long givenId=1L;
+        // ==========================================
+        // 1. ARRANGE
+        // ==========================================
+        Long givenId = 1L;
 
-        UserEntity initialUser= new UserEntity();
+        UserEntity initialUser = new UserEntity();
         initialUser.setId(givenId);
         initialUser.setUserName("Phan Van Manh");
         initialUser.setEmail("phanvanmanh@gmail.com");
@@ -160,28 +159,98 @@ public class UserServiceImplTest {
         initialUser.setRole(RoleEntity.builder().name("USER").build());
         initialUser.setPassword("Initial hash password");
 
-        UserRequest request = UserRequest.builder().userName("Manh Van Phan").email("manhchan@gmail.com").status(UserStatus.BANNED).roleName("ADMIN").password("123456").build();
+        UserRequest request = UserRequest.builder()
+                .userName("Manh Van Phan")
+                .email("manhchan@gmail.com")
+                .status(UserStatus.BANNED)
+                .roleName("ADMIN")
+                .password("123456")
+                .build();
 
-        UserEntity updatedUser= new UserEntity();
-        updatedUser.setUserName(request.userName());
-        updatedUser.setEmail(request.email());
-        updatedUser.setStatus(request.status());
+        UserResponse expectedResponse = UserResponse.builder()
+                .userName(request.userName())
+                .email(request.email())
+                .status(request.status())
+                .build();
 
-        UserResponse response = UserResponse.builder().userName(updatedUser.getUserName()).email(updatedUser.getEmail()).status(updatedUser.getStatus()).build();
+        // ==========================================
+        // MOCK: Repository & Encoder
+        // ==========================================
+        Mockito.when(userRepository.findById(Mockito.eq(givenId)))
+                .thenReturn(Optional.of(initialUser));
 
-        // Declare Mock function
-        Mockito.when(userRepository.findById(Mockito.eq(givenId))).thenReturn(Optional.of(initialUser));
-        Mockito.when(userRepository.existsByEmailAndIdNot(Mockito.eq(request.email()), Mockito.eq(givenId))).thenReturn(false);
-        Mockito.when(roleRepository.findByName(Mockito.eq("ADMIN"))).thenReturn(Optional.of(RoleEntity.builder().name("ADMIn").build()));
-        Mockito.when(passwordEncoder.encode("Updated hash password"));
-        Mockito.when(userRepository.existsByUserNameAndIdNot(request.userName(), givenId));
+        Mockito.when(userRepository.existsByEmailAndIdNot(Mockito.eq(request.email()), Mockito.eq(givenId)))
+                .thenReturn(false);
 
+        Mockito.when(roleRepository.findByName(Mockito.eq("ADMIN")))
+                .thenReturn(Optional.of(RoleEntity.builder().name("ADMIN").build())); // Fix lỗi đánh máy chữ ADMIn
 
+        // FIX 2: Mock đúng mật khẩu mới được truyền vào
+        Mockito.when(passwordEncoder.encode(request.password()))
+                .thenReturn("Updated hash password");
+
+        // FIX 1: Thêm thenReturn(false)
+        Mockito.when(userRepository.existsByUserNameAndIdNot(request.userName(), givenId))
+                .thenReturn(false);
+
+        // FIX 3: Phải mock hàm save, cho nó trả về chính cái initialUser (đã được mapper cập nhật data)
+        Mockito.when(userRepository.save(Mockito.any(UserEntity.class)))
+                .thenReturn(initialUser);
+
+        // ==========================================
+        // MOCK: Mapper
+        // ==========================================
+        Mockito.doAnswer(invocation -> {
+            UserRequest req = invocation.getArgument(0);
+            UserEntity user = invocation.getArgument(1);
+
+            // Simulate Mapping Action
+            user.setUserName(req.userName());
+            user.setEmail(req.email());
+            user.setStatus(req.status());
+            user.setPassword(req.password());
+            user.setRole(RoleEntity.builder().name(req.roleName()).build());
+
+            return null;
+        }).when(userMapper).updateEntityFromRequest(Mockito.any(UserRequest.class), Mockito.any(UserEntity.class));
+
+        Mockito.when(userMapper.toResponse(Mockito.any(UserEntity.class)))
+                .thenReturn(expectedResponse);
+
+        // ==========================================
+        // 2. ACT
+        // ==========================================
+        UserResponse result = userService.updateUser(givenId, request);
+
+        // ==========================================
+        // 3. ASSERT & VERIFY
+        // ==========================================
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.userName()).isEqualTo(expectedResponse.userName());
+        Assertions.assertThat(result.email()).isEqualTo(expectedResponse.email());
+        Assertions.assertThat(result.status()).isEqualTo(expectedResponse.status()); // Đã xóa dòng assert userName bị lặp
+
+        // Verify xem có gọi đủ các hàm không
+        Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.eq(givenId));
+        Mockito.verify(userRepository, Mockito.times(1)).existsByEmailAndIdNot(Mockito.any(String.class), Mockito.eq(givenId));
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserNameAndIdNot(Mockito.any(String.class), Mockito.eq(givenId));
+        Mockito.verify(roleRepository, Mockito.times(1)).findByName(Mockito.eq("ADMIN"));
+        Mockito.verify(passwordEncoder, Mockito.times(1)).encode(request.password()); // FIX: Verify đúng tham số
+        Mockito.verify(userMapper, Mockito.times(1)).updateEntityFromRequest(Mockito.any(UserRequest.class), Mockito.any(UserEntity.class));
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any(UserEntity.class));
+        Mockito.verify(userMapper, Mockito.times(1)).toResponse(Mockito.any(UserEntity.class));
     }
 
+    @Test
+    public void deleteUser_ShouldCallRepositoryDeleteById_WhenIdIsProvided() {
+        Long givenId = 1L;
 
+        userService.deleteUser(givenId);
 
-
-
-
+        // ==========================================
+        // 3. VERIFY (Vũ khí duy nhất để test hàm void)
+        // ==========================================
+        // Đảm bảo rằng hàm deleteById của Repository đã được gọi ĐÚNG 1 LẦN với đúng cái ID đó.
+        Mockito.verify(userRepository, Mockito.times(1)).deleteById(Mockito.eq(givenId));
+    }
 }
