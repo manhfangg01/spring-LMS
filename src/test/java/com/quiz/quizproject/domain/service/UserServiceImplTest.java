@@ -10,6 +10,7 @@ import com.quiz.quizproject.domain.user.repository.UserRepository;
 import com.quiz.quizproject.domain.user.service.impl.UserServiceImpl;
 import com.quiz.quizproject.repository.RoleRepository;
 import com.quiz.quizproject.util.constant.UserStatus;
+import com.quiz.quizproject.util.exception.handler.AppException;
 import com.quiz.quizproject.util.random.RandomHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -253,4 +255,34 @@ public class UserServiceImplTest {
         // Đảm bảo rằng hàm deleteById của Repository đã được gọi ĐÚNG 1 LẦN với đúng cái ID đó.
         Mockito.verify(userRepository, Mockito.times(1)).deleteById(Mockito.eq(givenId));
     }
+
+    //================================================
+    //--------------------SAD PATH------------------
+    //================================================
+
+    @Test
+    public void createUser_ShouldThrowAppException_WhenEmailIsDuplicated(){
+        // Arrange
+        UserRequest request = UserRequest.builder().email("phanvanmanh@gmail.com").build();
+        // Declare Mock Function
+        Mockito.when(userRepository.existsByEmail(Mockito.eq(request.email()))).thenReturn(true);
+
+        // Catching Action
+        // Lưu ý các hàm như Mockito.any() .eq() chỉ hoạt động trogn Mockito.when hoặc verify
+        AppException exception = Assertions.catchThrowableOfType(
+                () -> userService.createUser(request),
+                AppException.class
+        );
+        // Assert
+        Assertions.assertThat(exception).isNotNull();
+        Assertions.assertThat(exception.getError()).isInstanceOf(String.class).isEqualTo("Email already exists");
+        Assertions.assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        // Verify
+        Mockito.verify(userRepository, Mockito.times(1)).existsByEmail(Mockito.eq(request.email()));
+        Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(UserEntity.class));
+
+
+    }
+
 }
