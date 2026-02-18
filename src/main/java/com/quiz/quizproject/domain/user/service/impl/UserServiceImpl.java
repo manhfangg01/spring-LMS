@@ -36,17 +36,19 @@ public class UserServiceImpl implements UserService {
                                                                                                                    // Exception
         }
 
+        RoleEntity role = roleRepo.findByName(request.roleName())
+                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
+                        "Role not found"));
+
         UserEntity user = userMapper.toEntity(request);
+        user.setRole(role);
+        user.setPassword(passwordEncoder.encode(request.password()));
+
         String finalUserName;
         do {
             finalUserName = RandomHelper.generateUniqueUserName(user.getUserName());
         } while (userRepo.existsByUserName(finalUserName));
         user.setUserName(finalUserName);
-        user.setPassword(passwordEncoder.encode(request.password()));
-        RoleEntity role = roleRepo.findByName(request.roleName())
-                .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
-                        "Role not found"));
-        user.setRole(role);
 
         return userMapper.toResponse(userRepo.save(user));
     }
@@ -74,19 +76,22 @@ public class UserServiceImpl implements UserService {
             throw new AppException("ApiException", HttpStatus.BAD_REQUEST,
                     "Input error", "Email is already used by another user");
         }
+
+        // fix: cho phép người chỉnh sửa lại tên họ mong muốn chứ không nên thêm chuỗi ngẫu nhiên đằng sau
+        if(userRepo.existsByUserNameAndIdNot(request.userName(), id)) {
+            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error", "Username is already existed. Consider trying another");
+        }
+
         RoleEntity role = roleRepo.findByName(request.roleName())
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
                         "Role not found"));
+        userMapper.updateEntityFromRequest(request, user);
+
         user.setRole(role);
         // Trong hệ thống bảo mật thì admin có thể đổi mật khẩu của user chứ không có quyền xem
         user.setPassword(passwordEncoder.encode(request.password()));
-        String finalUserName = request.userName();
-        // fix: Nên cho phép người chỉnh sửa lại tên họ mong muốn chứ không nên thêm chuỗi ngẫu nhiên đằng sau
-        if(userRepo.existsByUserNameAndIdNot(finalUserName, id)) {
-            throw new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error", "Username is already existed. Consider trying another");
-        }
-        user.setUserName(finalUserName);
-        userMapper.updateEntityFromRequest(request, user);
+        user.setUserName(request.userName());
+
         return userMapper.toResponse(userRepo.save(user));
     }
 
