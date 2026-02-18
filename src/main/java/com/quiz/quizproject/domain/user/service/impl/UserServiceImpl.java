@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException("ApiException", HttpStatus.BAD_REQUEST, "Input error",
                         "Role not found"));
         user.setRole(role);
+        // Trong hệ thống bảo mật thì admin có thể đổi mật khẩu của user chứ không có quyền xem
         user.setPassword(passwordEncoder.encode(request.password()));
         String finalUserName = request.userName();
         // fix: Nên cho phép người chỉnh sửa lại tên họ mong muốn chứ không nên thêm chuỗi ngẫu nhiên đằng sau

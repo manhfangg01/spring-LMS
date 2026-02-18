@@ -149,39 +149,82 @@ public class UserServiceImplTest {
     // Updating User Test
     @Test
     public void updateUser_ShouldReturnUpdatedUserResponse_WhenValidIdAndRequestSubmitted(){
-        // Arrange
-        Long givenId=1L;
+         // I. Arrange
+        Long givenId = 1L;
 
-        UserEntity initialUser= new UserEntity();
-        initialUser.setId(givenId);
-        initialUser.setUserName("Phan Van Manh");
-        initialUser.setEmail("phanvanmanh@gmail.com");
-        initialUser.setStatus(UserStatus.ACTIVE);
-        initialUser.setRole(RoleEntity.builder().name("USER").build());
-        initialUser.setPassword("Initial hash password");
+        UserEntity dbUser = UserEntity.builder()
+                .userName("Phan Van Manh")
+                .email("manhphan@gmail.com")
+                .password("Initial Hash Password")
+                .status(UserStatus.ACTIVE)
+                .role(RoleEntity.builder().name("ADMIN").build())
+                .build();
+        UserRequest request = UserRequest.builder()
+                .userName("Manh Phan Van")
+                .email("newmanh@gmail.com")
+                .password("Updated Password")
+                .status(UserStatus.BANNED)
+                .roleName("USER")
+                .build();
 
-        UserRequest request = UserRequest.builder().userName("Manh Van Phan").email("manhchan@gmail.com").status(UserStatus.BANNED).roleName("ADMIN").password("123456").build();
+        UserResponse expectedResponse = UserResponse.builder()
+                .userName(request.userName())
+                .email(request.email())
+                .status(request.status())
+                .roleName("USER")
+                .build();
 
-        UserEntity updatedUser= new UserEntity();
-        updatedUser.setUserName(request.userName());
-        updatedUser.setEmail(request.email());
-        updatedUser.setStatus(request.status());
+        // Declare Mockito functions
+        Mockito.when(userRepository.findById(givenId)).thenReturn(Optional.of(dbUser));
+        Mockito.when(userRepository.existsByEmailAndIdNot(request.email(), givenId)).thenReturn(false);
+        Mockito.when(roleRepository.findByName("USER")).thenReturn(Optional.of(RoleEntity.builder().name("USER").build()));
+        Mockito.when(passwordEncoder.encode(request.password())).thenReturn("New Hash Password");
+        Mockito.when(userRepository.existsByUserNameAndIdNot(request.userName(), givenId)).thenReturn(false );
+        Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(dbUser);
+        Mockito.when(userMapper.toResponse(Mockito.any(UserEntity.class))).thenReturn(expectedResponse);
 
-        UserResponse response = UserResponse.builder().userName(updatedUser.getUserName()).email(updatedUser.getEmail()).status(updatedUser.getStatus()).build();
+        // Mock Mapper
+        Mockito.doAnswer(invocation -> {
+            UserRequest req = invocation.getArgument(0);
+            UserEntity entity = invocation.getArgument(1);
+            // Simulates copying objects
+            entity.setUserName(req.userName());
+            entity.setEmail(req.email());
+            entity.setStatus(req.status());
+            return null;
+        }).when(userMapper).updateEntityFromRequest(Mockito.any(UserRequest.class), Mockito.any(UserEntity.class));
 
-        // Declare Mock function
-        Mockito.when(userRepository.findById(Mockito.eq(givenId))).thenReturn(Optional.of(initialUser));
-        Mockito.when(userRepository.existsByEmailAndIdNot(Mockito.eq(request.email()), Mockito.eq(givenId))).thenReturn(false);
-        Mockito.when(roleRepository.findByName(Mockito.eq("ADMIN"))).thenReturn(Optional.of(RoleEntity.builder().name("ADMIn").build()));
-        Mockito.when(passwordEncoder.encode("Updated hash password"));
-        Mockito.when(userRepository.existsByUserNameAndIdNot(request.userName(), givenId));
+        // II. Act
+        UserResponse result = userService.updateUser(givenId, request);
 
+        // III. Assert & Verify
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.userName()).isEqualTo(request.userName());
+        Assertions.assertThat(result.email()).isEqualTo(request.email());
+        Assertions.assertThat(result.status()).isEqualTo(request.status());
+        Assertions.assertThat(result.roleName()).isEqualTo("USER");
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(givenId);
+        Mockito.verify(userRepository, Mockito.times(1)).existsByEmailAndIdNot(request.email(), givenId);
+        Mockito.verify(userRepository, Mockito.times(1)).existsByUserNameAndIdNot(request.userName(), givenId);
+        Mockito.verify(roleRepository, Mockito.times(1)).findByName("USER");
+        Mockito.verify(passwordEncoder, Mockito.times(1)).encode(request.password());
+        Mockito.verify(userMapper, Mockito.times(1)).updateEntityFromRequest(Mockito.any(UserRequest.class), Mockito.any(UserEntity.class));
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any(UserEntity.class));
     }
 
+    @Test
+    public void deleteUser_ShouldCallRepoDeleteMethod_WhenExistedIdSubmitted(){
+        // I. Arrange
+        Long givenId = 99L;
 
+        // II. Act
+        userService.deleteUser(givenId);
 
-
+        // III. Verify
+        // In case of 204 api, check if it calls the method of repo
+        Mockito.verify(userRepository, Mockito.times(1)).deleteById(givenId);
+    }
 
 
 }
