@@ -6,6 +6,7 @@ import com.quiz.quizproject.domain.user.controller.UserController;
 import com.quiz.quizproject.domain.user.dto.request.UserRequest;
 import com.quiz.quizproject.domain.user.dto.response.UserResponse;
 import com.quiz.quizproject.domain.user.service.UserService;
+import com.quiz.quizproject.service.auth.JwtService;
 import com.quiz.quizproject.util.constant.UserStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
-@AutoConfigureMockMvc
+// Nó sẽ tạo ra một không gian mini chứa:
+// Controller có thể 1 hoặc nhiều
+// DispatcherServlet: Điều hướng request đi đúng nơi
+// Các Configurations của Security: SecurityFilterChain, WebSecurityConfigurer
+// ControllerAdvice: nơi xử lý lỗi = @RestControllerAdvice
+@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
 // Từ SpringBoot 3.4  trở đi thì @MockBean -> @MockitoBean
 public class UserControllerTests {
@@ -36,11 +42,13 @@ public class UserControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockitoBean // Cung cấp cho thằng jwtFilter
+    private JwtService jwtService;
+
     @MockitoBean // Tên mới, package mới, quyền năng vẫn thế
     // Trên ControllerTest thì phải dùng MockitoBean
     // do WebMvcTest sẽ khởi tạo 1 phần của Spring Context để có thể perform được api ở tầng web
     private UserService userService;
-
 
     // ObjectMapper thuộc thư viện Jackson khác với UserMapper.. thuộc thư viện MapStruct
     // UserMapper ->  chuyển đổi entity <-> DTO
@@ -70,7 +78,6 @@ public class UserControllerTests {
                 .build();
     }
 
-
     @Test
     public void createUser_ShouldReturn201Created_WhenRequestIsValid() throws Exception{
         // thiết lập hành vi của userService.createUser
@@ -90,12 +97,5 @@ public class UserControllerTests {
 
         // (Optional) Kiểm tra xem service có thực sự được gọi đúng 1 lần không
         then(userService).should().createUser(any(UserRequest.class));
-
     }
-
-
-
-
-
-
 }
