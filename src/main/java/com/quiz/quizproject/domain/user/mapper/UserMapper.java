@@ -19,7 +19,6 @@ public interface UserMapper {
                                                                                              // a field is null, it will
                                                                                              // not set it to null but
                                                                                              // keep the old value
-  
 
     @Mapping(target = "role", ignore = true) // manually handled in service
     @Mapping(target = "password", ignore = true) // manually handled in service
