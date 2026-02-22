@@ -33,7 +33,6 @@ public class UserController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String order,
             @ModelAttribute UserFilter filterCriteria
-
     ) {
         int pageIndex = page > 0 ? page - 1 : 0;
         Sort sort = Sort.by(order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
@@ -59,5 +58,4 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
-
 }

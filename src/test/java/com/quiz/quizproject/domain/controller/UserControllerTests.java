@@ -24,12 +24,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -124,7 +121,7 @@ public class UserControllerTests {
                 .param("size", "10")
                 .param("sortBy", "id")
                 .param("order", "acs")
-                .contentType(MediaType.APPLICATION_JSON));
+                .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isOk())
                 // Kiểm tra nội dung bên trong mảng "content" của Page
@@ -148,5 +145,58 @@ public class UserControllerTests {
 //        System.out.println("========================");
 
         then(userService).should().getAllUsers(argThat(p -> p.getPageNumber() == 0), any());
+    }
+
+    @Test
+    public void getDetailedUser_ShouldReturnSpecificUser_WhenUserIsExisted() throws Exception{
+        // I. Given
+        Long givenId = 1L;
+        // Dùng response toàn cục
+        given(userService.getUserById(givenId)).willReturn(response);
+
+        ResultActions result = mockMvc.perform(get("/api/users/"+givenId)
+                .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(response.email()))
+                .andExpect(jsonPath("$.userName").value(response.userName()))
+                .andExpect(jsonPath("$.status").value(response.status().name()))
+                .andExpect(jsonPath("$.roleName").value(response.roleName()))
+                .andDo(print());
+
+        then(userService).should().getUserById(givenId);
+    }
+    @Test
+    public void updateUser_ShouldReturnUpdatedUser_WhenUserIsExisted() throws Exception{
+        // I. GIVEN (Arrange)
+        Long userId = 1L;
+        UserRequest updateRequest = request.withEmail("new@gmail.com");
+        UserResponse updatedResponse = response.withEmail("new@gmail.com");
+
+        given(userService.updateUser(eq(userId), any(UserRequest.class))).willReturn(updatedResponse);
+
+        // II. WHEN (Act)
+        ResultActions result = mockMvc.perform(put("/api/users/" + userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)));
+
+        // III. THEN (Assert)
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("new@gmail.com"))
+                .andDo(print());
+    }
+
+    @Test
+    public void deleteUser_ShouldCallServiceDeleteMethod_WhenUserIsExisted() throws Exception{
+        // I. Given
+        Long givenId = 1L;
+        willDoNothing().given(userService).deleteUser(givenId);
+
+        ResultActions result = mockMvc.perform(delete("/api/users/"+givenId)
+                .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNoContent());
+
+        then(userService).should().deleteUser(givenId);
     }
 }
