@@ -31,6 +31,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <tomcat.version>10.1.52</tomcat.version>
     </properties>
 
 
