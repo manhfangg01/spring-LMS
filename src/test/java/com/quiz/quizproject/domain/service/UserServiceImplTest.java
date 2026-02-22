@@ -103,10 +103,7 @@ public class UserServiceImplTest {
     @Test
     public void getAllUsers_ShouldReturnPageOfResponses_WhenCallWithValidParams(){
         // Arrange
-        int pageNumber = 0;
-        int pageSize = 10;
-        Sort sortBy =Sort.by(Sort.Direction.ASC, "id");
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC, "id"));
 
         UserFilter filter = new UserFilter();
 

@@ -23,3 +23,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  jackson:
+    serialization:
+      indent-output: true
